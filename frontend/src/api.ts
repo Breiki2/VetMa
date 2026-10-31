@@ -9,8 +9,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     headers.set('Content-Type', 'application/json')
   }
 
-  const csrfExempt = path === '/api/login'
-  if (!csrfExempt && !['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
     if (!csrfToken) {
       const response = await fetch(`${base}/api/csrf-token`, { credentials: 'include' })
       if (!response.ok) throw new Error('No se pudo iniciar una sesión segura.')
