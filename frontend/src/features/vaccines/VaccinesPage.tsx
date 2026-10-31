@@ -3,7 +3,21 @@ import type { FormEvent } from 'react'
 import { Plus, Syringe } from 'lucide-react'
 import { api, type Vaccine } from '../../api'
 import { errorMessage } from '../../shared/format'
-import { Button, EmptyState, FormActions, FormField, formStyles, inputStyles, Modal, PageHeading, Panel, Toast } from '../../shared/ui'
+import {
+  Badge,
+  Button,
+  EmptyState,
+  FormActions,
+  FormField,
+  Modal,
+  PageHeading,
+  Toast,
+  formStyles,
+  inputStyles,
+} from '../../shared/ui'
+
+const vaccineRowGrid =
+  'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 lg:grid-cols-[minmax(0,1fr)_150px_100px_170px] lg:gap-4'
 
 export function VaccinesPage({ isAdmin = false }: { isAdmin?: boolean }) {
   const [vaccines, setVaccines] = useState<Vaccine[]>([])
@@ -64,97 +78,82 @@ export function VaccinesPage({ isAdmin = false }: { isAdmin?: boolean }) {
 
   return (
     <>
-      {error && <Toast message={error} onDismiss={() => setError('')} />}
+      {error && <Toast message={error} onDismiss={() => setError('')} tone="error" />}
       <PageHeading
         action={
           isAdmin ? (
-            <Button onClick={() => setIsDialogOpen(true)} variant="primary">
+            <Button className="max-sm:w-full" onClick={() => setIsDialogOpen(true)} variant="primary">
               <Plus size={17} /> Nueva vacuna
             </Button>
           ) : undefined
         }
         description={
           isAdmin
-            ? 'Catálogo global de vacunas disponibles para todos los veterinarios'
-            : 'Vacunas activas disponibles para registrar'
+            ? 'Catálogo global disponible para todos los veterinarios'
+            : 'Vacunas activas para registrar en las atenciones'
         }
-        eyebrow="CATÁLOGO GLOBAL"
         title="Vacunas"
       />
-      <Panel className={isAdmin ? 'overflow-hidden' : undefined}>
-        {displayedVaccines.length ? (
-          isAdmin ? (
-            <div className="overflow-auto">
-              <table className="w-full min-w-[650px] border-collapse text-left">
-                <thead className="bg-slate-50 text-[9px] font-bold tracking-widest text-slate-500">
-                  <tr>
-                    <th className="h-10 px-4">VACUNA</th>
-                    <th className="px-4">ESPECIE</th>
-                    <th className="px-4">ESTADO</th>
-                    <th className="px-4 text-right">ACCIONES</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedVaccines.map((vaccine) => (
-                    <tr className="h-16 border-t border-slate-100 text-xs text-slate-600" key={vaccine.id}>
-                      <td className="px-4">
-                        <div className="flex items-center gap-3">
-                          <span className={`grid size-[34px] place-items-center rounded-lg ${vaccine.active ? 'bg-emerald-50 text-brand-700' : 'bg-slate-100 text-slate-400'}`}>
-                            <Syringe size={17} />
-                          </span>
-                          <strong className="text-slate-700">{vaccine.name}</strong>
-                        </div>
-                      </td>
-                      <td className="px-4">{speciesLabel(vaccine.species)}</td>
-                      <td className="px-4">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                            vaccine.active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
-                          }`}
-                        >
-                          {vaccine.active ? 'Activa' : 'Inactiva'}
-                        </span>
-                      </td>
-                      <td className="px-4 text-right">
-                        <div className="inline-flex gap-2">
-                          <Button onClick={() => setEditingVaccine(vaccine)}>Editar</Button>
-                          {vaccine.active && (
-                            <Button onClick={() => void deactivateVaccine(vaccine.id)}>Desactivar</Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+      {displayedVaccines.length ? (
+        <>
+          {isAdmin && (
+            <div className={`${vaccineRowGrid} hidden border-b border-rule px-3 py-2 text-xs text-muted lg:grid`}>
+              <span>Vacuna</span>
+              <span>Especie</span>
+              <span>Estado</span>
+              <span />
             </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3 p-4 max-[650px]:grid-cols-1">
-              {displayedVaccines.map((vaccine) => (
-                <article className="flex items-center gap-3 rounded-lg border border-slate-100 p-3" key={vaccine.id}>
-                  <span className="grid size-[38px] place-items-center rounded-xl bg-emerald-50 text-brand-700">
-                    <Syringe size={19} />
+          )}
+          <ul className="divide-y divide-rule border-t border-rule lg:border-t-0">
+            {displayedVaccines.map((vaccine) => (
+              <li key={vaccine.id}>
+                <div className={`${vaccineRowGrid} px-3 py-3`}>
+                  <strong className="truncate text-sm font-medium text-text max-lg:col-start-1 max-lg:row-start-1">
+                    {vaccine.name}
+                  </strong>
+                  <span className="text-[13px] text-muted max-lg:col-start-1 max-lg:row-start-2">
+                    {speciesLabel(vaccine.species)}
                   </span>
-                  <div>
-                    <strong className="block text-xs text-slate-700">{vaccine.name}</strong>
-                    <span className="mt-1 block text-[10px] text-muted">{speciesLabel(vaccine.species)}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )
-        ) : (
-          <EmptyState
-            description={
-              isAdmin
-                ? 'Agregá la primera vacuna para que esté disponible en las atenciones.'
-                : 'El administrador todavía no cargó vacunas activas en el catálogo.'
-            }
-            icon={Syringe}
-            title="El catálogo todavía está vacío"
-          />
-        )}
-      </Panel>
+                  <span className="max-lg:col-start-2 max-lg:row-start-1 max-lg:self-start">
+                    <Badge tone={vaccine.active ? 'positive' : 'neutral'}>
+                      {vaccine.active ? 'Activa' : 'Inactiva'}
+                    </Badge>
+                  </span>
+                  {isAdmin && (
+                    <span className="flex flex-wrap gap-2 max-lg:col-start-2 max-lg:row-start-2 max-lg:justify-self-end">
+                      <Button onClick={() => setEditingVaccine(vaccine)} variant="ghost">
+                        Editar
+                      </Button>
+                      {vaccine.active && (
+                        <Button onClick={() => void deactivateVaccine(vaccine.id)} variant="danger">
+                          Desactivar
+                        </Button>
+                      )}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {isAdmin && (
+            <p className="mt-4 max-w-xl text-[13px] leading-6 text-muted">
+              Las vacunas que ya se usaron en una atención no se eliminan: se desactivan para que
+              no estén disponibles en nuevas atenciones.
+            </p>
+          )}
+        </>
+      ) : (
+        <EmptyState
+          description={
+            isAdmin
+              ? 'Agregá la primera vacuna para que esté disponible en las atenciones.'
+              : 'El administrador todavía no cargó vacunas activas en el catálogo.'
+          }
+          icon={Syringe}
+          title="El catálogo todavía está vacío"
+        />
+      )}
 
       {isDialogOpen && (
         <VaccineDialog onClose={() => setIsDialogOpen(false)} onSave={createVaccine} />
@@ -185,11 +184,7 @@ function VaccineDialog({
   }
 
   return (
-    <Modal
-      eyebrow="CATÁLOGO GLOBAL"
-      onClose={onClose}
-      title={vaccine ? 'Editar vacuna' : 'Nueva vacuna'}
-    >
+    <Modal onClose={onClose} title={vaccine ? 'Editar vacuna' : 'Nueva vacuna'}>
       <form className={formStyles} onSubmit={submit}>
         <FormField label="Nombre de la vacuna">
           <input

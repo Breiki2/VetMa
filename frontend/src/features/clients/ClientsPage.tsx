@@ -304,7 +304,7 @@ export function ClientsPage({
 
   return (
     <>
-      {error && <Toast message={error} onDismiss={() => setError('')} />}
+      {error && <Toast message={error} onDismiss={() => setError('')} tone="error" />}
       {selectedClient && selectedPatient ? (
         <PatientDetailView
           attentions={attentions}

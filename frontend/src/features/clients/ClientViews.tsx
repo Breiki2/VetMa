@@ -13,7 +13,21 @@ import {
 import type { Attention, Client, ClientAttention, ClientDetails, Patient } from '../../api'
 import { api } from '../../api'
 import { attentionTypeLabel, formatMoney } from '../../shared/format'
-import { Button, EmptyState, PageHeading, Panel, PanelHeading } from '../../shared/ui'
+import {
+  Badge,
+  Button,
+  EmptyState,
+  Menu,
+  MenuItem,
+  PageHeading,
+  Stat,
+  StatStrip,
+  Switch,
+  inputStyles,
+} from '../../shared/ui'
+
+const clientRowGrid =
+  'grid grid-cols-[minmax(0,1fr)_auto_16px] items-center gap-x-3 gap-y-1 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_120px_20px] lg:gap-4'
 
 export function ClientListView({
   clients,
@@ -45,84 +59,164 @@ export function ClientListView({
   return (
     <>
       <PageHeading
-        action={<Button onClick={onAdd} variant="primary"><Plus size={17} /> Nuevo cliente</Button>}
-        description="Gestioná tus clientes y sus pacientes"
-        eyebrow="TU CONSULTORIO"
+        action={
+          <Button className="max-sm:w-full" onClick={onAdd} variant="primary">
+            <Plus size={17} /> Nuevo cliente
+          </Button>
+        }
+        description="Pacientes, historiales y saldos de tu consultorio"
         title="Clientes"
       />
-      <div className="mb-4 flex items-center gap-4">
-        <div className="flex gap-3 text-xs" role="tablist" aria-label="Buscar en">
-          {(['clients', 'patients'] as const).map((kind) => <button aria-selected={searchKind === kind} className={`border-b-2 pb-2 ${searchKind === kind ? 'border-brand-700 font-semibold text-slate-800' : 'border-transparent text-slate-500'}`} key={kind} onClick={() => onSearchKindChange(kind)} role="tab" type="button">{kind === 'clients' ? 'Clientes' : 'Pacientes'}</button>)}
+
+      <div className="border-b border-border">
+        <div aria-label="Buscar en" className="flex gap-5" role="tablist">
+          {(['clients', 'patients'] as const).map((kind) => (
+            <button
+              aria-selected={searchKind === kind}
+              className={`-mb-px border-b-2 px-0.5 pb-2 text-[13px] transition-colors ${
+                searchKind === kind
+                  ? 'border-accent-ink font-medium text-text'
+                  : 'border-transparent text-muted hover:text-text'
+              }`}
+              key={kind}
+              onClick={() => onSearchKindChange(kind)}
+              role="tab"
+              type="button"
+            >
+              {kind === 'clients' ? 'Clientes' : 'Pacientes'}
+            </button>
+          ))}
         </div>
-        <label className="flex h-[41px] w-full max-w-[440px] flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-400">
-          <Search size={18} />
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <label className="flex h-10 w-full items-center gap-2 rounded-control border border-control bg-surface px-3 text-faint sm:max-w-[360px]">
+          <Search size={17} />
           <input
-            className="w-full text-xs text-slate-700 outline-none placeholder:text-slate-400"
+            className="w-full bg-transparent text-sm text-text outline-none"
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder={searchKind === 'clients' ? 'Buscar por nombre, teléfono o email…' : 'Buscar pacientes por nombre o cliente…'}
+            placeholder={searchKind === 'clients' ? 'Buscar cliente' : 'Buscar paciente'}
             value={query}
           />
-          <kbd className="whitespace-nowrap rounded border border-slate-200 px-1.5 py-0.5 text-[10px]">⌘ K</kbd>
         </label>
-        <span className="text-[11px] text-muted">{total} {searchKind === 'clients' ? 'clientes' : 'pacientes'}</span>
+        <span className="text-[13px] text-muted">
+          {total} {searchKind === 'clients' ? 'clientes' : 'pacientes'}
+        </span>
       </div>
-      <Panel className="overflow-hidden">
-        {searchKind === 'patients' ? <div className="divide-y divide-slate-100">
-          {patientResults.map((patient) => <button className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-slate-50" key={patient.id} onClick={() => onSelectPatientResult(patient.clientId, patient.id)} type="button"><span><strong className="block text-xs text-slate-700">{patient.name}</strong><span className="mt-1 block text-[10px] text-slate-500">{patient.species === 'dog' ? 'Perro' : 'Gato'} · {patient.clientName}</span></span><ChevronRight className="text-slate-400" size={17} /></button>)}
-          {patientResults.length === 0 && <EmptyState description="Probá con otro nombre de paciente o cliente." icon={Dog} title="No encontramos pacientes" />}
-        </div> : <div className="overflow-auto">
-        <div className="overflow-auto">
-          <table className="w-full min-w-[620px] border-collapse text-left">
-            <thead className="bg-slate-50 text-[9px] font-bold tracking-widest text-slate-500">
-              <tr>
-                <th className="h-10 px-4">CLIENTE</th>
-                <th className="px-4">CONTACTO</th>
-                <th className="px-4">DEUDA PENDIENTE</th>
-                <th className="w-9 px-4" />
-              </tr>
-            </thead>
-            <tbody>
-              {clients.map((client) => (
-                <tr
-                  className="h-16 cursor-pointer border-t border-slate-100 text-xs text-slate-600 hover:bg-slate-50"
-                  key={client.id}
-                  onClick={() => onSelect(client.id)}
-                >
-                  <td className="px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-9 place-items-center rounded-full bg-emerald-50 text-[11px] font-bold text-brand-700">
-                        {client.name[0]}{client.surname[0]}
-                      </div>
-                      <div>
-                        <strong className="block text-slate-700">{client.name} {client.surname}</strong>
-                        <span className="mt-1 block text-[10px] text-muted">{client.email || 'Email no informado'}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4">{client.phone}</td>
-                  <td className="px-4">
-                    <strong className={Number(client.debtTotal) > 0 ? 'text-debt' : ''}>
-                      {formatMoney(Number(client.debtTotal || 0))}
-                    </strong>
-                  </td>
-                  <td className="px-4 text-slate-400"><ChevronRight size={17} /></td>
-                </tr>
+
+      {searchKind === 'patients' ? (
+        <div className="mt-3">
+          {patientResults.length > 0 && (
+            <ul className="divide-y divide-rule border-t border-rule">
+              {patientResults.map((patient) => (
+                <li key={patient.id}>
+                  <button
+                    className={`${clientRowGrid} w-full px-3 py-3.5 text-left transition-colors hover:bg-raised`}
+                    onClick={() => onSelectPatientResult(patient.clientId, patient.id)}
+                    type="button"
+                  >
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="grid size-8 flex-none place-items-center rounded-full bg-raised text-muted">
+                        <Dog size={16} strokeWidth={1.7} />
+                      </span>
+                      <span className="min-w-0">
+                        <strong className="block truncate text-sm font-medium text-text">
+                          {patient.name}
+                        </strong>
+                        <span className="block truncate text-[13px] text-muted">
+                          {speciesLabel(patient.species)} · {patient.clientName}
+                        </span>
+                      </span>
+                    </span>
+                    <ChevronRight
+                      className="text-faint max-lg:col-start-3 max-lg:row-span-2 max-lg:row-start-1 max-lg:self-center max-lg:justify-self-end lg:col-start-4"
+                      size={17}
+                    />
+                  </button>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          )}
+          {patientResults.length === 0 && (
+            <EmptyState
+              description="Probá con otro nombre de paciente o de cliente."
+              icon={Dog}
+              title="No encontramos pacientes"
+            />
+          )}
         </div>
-        {clients.length === 0 && (
-          <EmptyState
-            action={query ? undefined : 'Crear primer cliente'}
-            description={query ? 'Probá con otro nombre, email o teléfono.' : 'Cuando agregues un cliente, va a aparecer acá.'}
-            icon={UserRound}
-            onAction={onAdd}
-            title={query ? 'No encontramos clientes' : 'Tu lista de clientes está vacía'}
-          />
-        )}
-        </div>}
-        {hasMore && <div className="border-t border-slate-100 p-3 text-center"><Button onClick={onLoadMore}>Cargar más {searchKind === 'clients' ? 'clientes' : 'pacientes'}</Button></div>}
-      </Panel>
+      ) : (
+        <div className="mt-3">
+          <div className={`${clientRowGrid} hidden border-b border-rule px-3 py-2 text-xs text-muted lg:grid`}>
+            <span>Cliente</span>
+            <span>Contacto</span>
+            <span className="text-right">Saldo</span>
+            <span />
+          </div>
+          {clients.length > 0 && (
+            <ul className="divide-y divide-rule">
+              {clients.map((client) => (
+                <li key={client.id}>
+                  <button
+                    className={`${clientRowGrid} w-full px-3 py-3.5 text-left transition-colors hover:bg-raised`}
+                    onClick={() => onSelect(client.id)}
+                    type="button"
+                  >
+                    <span className="flex min-w-0 items-center gap-3 max-lg:col-start-1 max-lg:row-start-1">
+                      <span className="grid size-8 flex-none place-items-center rounded-full bg-accent-soft text-[11px] font-semibold text-accent-ink">
+                        {client.name[0]}
+                        {client.surname[0]}
+                      </span>
+                      <span className="min-w-0">
+                        <strong className="block truncate text-sm font-medium text-text">
+                          {client.name} {client.surname}
+                        </strong>
+                        <span className="hidden truncate text-[13px] text-muted lg:block">
+                          {client.email || 'Sin email'}
+                        </span>
+                      </span>
+                    </span>
+                    <span className="text-[13px] text-muted max-lg:col-start-1 max-lg:row-start-2 max-lg:pl-11">
+                      {client.phone}
+                    </span>
+                    <span
+                      className={`text-right text-[13px] tabular-nums max-lg:col-start-2 max-lg:row-start-1 max-lg:self-start ${
+                        Number(client.debtTotal) > 0 ? 'font-medium text-text' : 'text-muted'
+                      }`}
+                    >
+                      {formatMoney(Number(client.debtTotal || 0))}
+                    </span>
+                    <ChevronRight
+                      className="text-faint max-lg:col-start-3 max-lg:row-span-2 max-lg:row-start-1 max-lg:self-center max-lg:justify-self-end"
+                      size={17}
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {clients.length === 0 && (
+            <EmptyState
+              action={query ? undefined : 'Crear primer cliente'}
+              description={
+                query
+                  ? 'Probá con otro nombre, email o teléfono.'
+                  : 'Cuando agregues un cliente, va a aparecer acá.'
+              }
+              icon={UserRound}
+              onAction={onAdd}
+              title={query ? 'No encontramos clientes' : 'Todavía no hay clientes'}
+            />
+          )}
+          {hasMore && (
+            <div className="mt-2 border-t border-rule pt-3 text-center">
+              <Button onClick={onLoadMore} variant="ghost">
+                Cargar más {searchKind === 'clients' ? 'clientes' : 'pacientes'}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
     </>
   )
 }
@@ -150,48 +244,77 @@ export function ClientDetailView({
 }) {
   return (
     <>
-      <ClientAttentionHistory items={client.attentions} />
       <BackButton onClick={onBack}>Volver a clientes</BackButton>
       <PageHeading
-        action={<div className="flex flex-wrap gap-2"><Button onClick={onEditClient}>Editar cliente</Button><Button onClick={onArchiveClient}>Archivar</Button><Button onClick={onAddPatient} variant="primary"><Plus size={17} /> Agregar paciente</Button></div>}
+        action={
+          <>
+            <Button className="max-sm:flex-1" onClick={onEditClient}>
+              Editar cliente
+            </Button>
+            <Button className="max-sm:flex-1" onClick={onAddPatient} variant="primary">
+              <Plus size={17} /> Agregar paciente
+            </Button>
+            <Menu label="Más acciones del cliente">
+              <MenuItem danger onSelect={onArchiveClient}>
+                Archivar cliente
+              </MenuItem>
+            </Menu>
+          </>
+        }
         description={`${client.phone} · ${client.email || 'Sin email registrado'}`}
-        eyebrow="FICHA DEL CLIENTE"
         title={`${client.name} ${client.surname}`}
       />
-      <div className="mb-[18px] grid grid-cols-3 gap-3 max-[650px]:gap-2">
-        <StatCard label="Pacientes" value={String(client.patientsPagination.total)} />
-        <StatCard label="Deuda pendiente" value={formatMoney(Number(client.debtTotal || 0))} />
-        <div className="min-h-[85px] rounded-xl border border-line bg-white px-4 py-3.5 shadow-sm max-[650px]:px-2">
-          <span className="block text-[10px] text-muted">Email</span>
-          <strong className="mt-1.5 block break-all text-[13px] text-slate-700 max-[650px]:text-[11px]">
-            {client.email || 'No informado'}
-          </strong>
-          {!client.email && <em className="mt-1 block text-[9px] not-italic text-orange-700">Necesario para recordatorios</em>}
-        </div>
-      </div>
 
-      <Panel>
-        <PanelHeading
-          action={<Button onClick={onAddPatient}><Plus size={16} /> Nuevo paciente</Button>}
-          description="Animales asociados a este cliente"
-          title="Pacientes"
+      <StatStrip>
+        <Stat label="Pacientes" value={String(client.patientsPagination.total)} />
+        <Stat
+          label="Deuda pendiente"
+          tone={Number(client.debtTotal) > 0 ? 'danger' : 'default'}
+          value={formatMoney(Number(client.debtTotal || 0))}
         />
-        {client.patients.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 p-4 max-[650px]:grid-cols-1">
-            {client.patients.map((patient) => (
-              <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-white p-3" key={patient.id}>
-                <button className="flex min-w-0 flex-1 items-center gap-3 text-left text-slate-500" onClick={() => onSelectPatient(patient)} type="button">
-                  <span className="grid size-[38px] shrink-0 place-items-center rounded-xl bg-emerald-50 text-brand-700"><Dog size={21} /></span>
-                  <span className="min-w-0 flex-1">
-                    <strong className="block text-xs text-slate-700">{patient.name}</strong>
-                    <span className="mt-1 block text-[10px] text-muted">{patient.species === 'dog' ? 'Perro' : 'Gato'} · {patient.breed || 'Raza no indicada'}</span>
-                  </span>
-                  <ChevronRight size={18} />
-                </button>
-                <Button onClick={() => onEditPatient(patient)}>Editar</Button>
-              </div>
-            ))}
+        <Stat label="Atenciones" value={String(client.attentions.length)} />
+      </StatStrip>
+
+      <section className="mt-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-[15px] font-semibold text-text">Pacientes</h2>
+            <p className="mt-0.5 text-[13px] text-muted">Animales asociados a este cliente</p>
           </div>
+          <Button onClick={onAddPatient}>
+            <Plus size={16} /> Nuevo paciente
+          </Button>
+        </div>
+
+        {client.patients.length > 0 ? (
+          <ul className="mt-3 divide-y divide-rule border-t border-rule">
+            {client.patients.map((patient) => (
+              <li className="flex items-center gap-1" key={patient.id}>
+                <button
+                  className="flex min-w-0 flex-1 items-center gap-3 rounded-control px-2 py-3 text-left transition-colors hover:bg-raised"
+                  onClick={() => onSelectPatient(patient)}
+                  type="button"
+                >
+                  <span className="grid size-8 flex-none place-items-center rounded-full bg-raised text-muted">
+                    <Dog size={16} strokeWidth={1.7} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <strong className="block truncate text-sm font-medium text-text">
+                      {patient.name}
+                    </strong>
+                    <span className="block truncate text-[13px] text-muted">
+                      {speciesLabel(patient.species)} · {patient.breed || 'Raza no indicada'}
+                      {patient.deceased ? ' · Fallecido' : ''}
+                    </span>
+                  </span>
+                  <ChevronRight className="text-faint" size={17} />
+                </button>
+                <Button className="shrink-0" onClick={() => onEditPatient(patient)} variant="ghost">
+                  Editar
+                </Button>
+              </li>
+            ))}
+          </ul>
         ) : (
           <EmptyState
             action="Agregar paciente"
@@ -201,28 +324,60 @@ export function ClientDetailView({
             title="Agregá el primer paciente"
           />
         )}
-        {client.patients.length < client.patientsPagination.total && <div className="border-t border-slate-100 p-3 text-center"><Button onClick={onLoadMorePatients}>Cargar más pacientes</Button></div>}
-      </Panel>
+        {client.patients.length < client.patientsPagination.total && (
+          <div className="border-t border-rule pt-3 text-center">
+            <Button onClick={onLoadMorePatients} variant="ghost">
+              Cargar más pacientes
+            </Button>
+          </div>
+        )}
+      </section>
 
-      <Panel className="p-[17px_18px]">
-        <h2 className="mb-4 font-display text-sm font-bold text-slate-700">Datos de contacto</h2>
-        <div className="grid grid-cols-3 gap-3 max-[650px]:grid-cols-2">
+      <section className="mt-8 border-t border-border pt-6">
+        <h2 className="text-[15px] font-semibold text-text">Datos de contacto</h2>
+        <dl className="mt-3 grid gap-4 sm:grid-cols-3">
           <ContactValue label="Teléfono" value={client.phone} />
-          <ContactValue label="Email" value={client.email || '—'} />
-          <ContactValue label="Dirección" value={client.address || '—'} />
-        </div>
-      </Panel>
+          <ContactValue
+            label="Email"
+            value={client.email || 'No informado'}
+            warning={!client.email ? 'Necesario para enviar recordatorios' : undefined}
+          />
+          <ContactValue label="Dirección" value={client.address || 'No informada'} />
+        </dl>
+      </section>
 
-      <Panel className="mt-4 flex flex-wrap items-center justify-between gap-3 p-[17px_18px]">
+      <section className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-display text-sm font-bold text-slate-700">Recordatorios por email</h2>
-          <p className="mt-1 text-[11px] text-muted">La preferencia se mantiene aunque cambie la dirección de correo.</p>
+          <h2 className="text-[15px] font-semibold text-text">Recordatorios por email</h2>
+          <p className="mt-0.5 text-[13px] text-muted">
+            La preferencia se mantiene aunque cambie la dirección de correo.
+          </p>
         </div>
-        <label className="flex items-center gap-2 text-xs text-slate-700">
-          <input checked={Boolean(client.remindersOptOut)} className="accent-brand-700" onChange={onToggleRemindersOptOut} type="checkbox" />
-          No recibir recordatorios
-        </label>
-      </Panel>
+        <Switch
+          checked={Boolean(client.remindersOptOut)}
+          label="No recibir recordatorios"
+          onChange={onToggleRemindersOptOut}
+        />
+      </section>
+
+      <section className="mt-8 border-t border-border pt-6">
+        <div className="flex items-baseline justify-between gap-3">
+          <div>
+            <h2 className="text-[15px] font-semibold text-text">Historial del cliente</h2>
+            <p className="mt-0.5 text-[13px] text-muted">Actividad clínica de sus pacientes</p>
+          </div>
+          <span className="text-[13px] text-muted">{client.attentions.length}</span>
+        </div>
+        {client.attentions.length ? (
+          <ul className="mt-3 border-t border-rule">
+            {client.attentions.map((item) => (
+              <ClientHistoryRow item={item} key={item.id} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-[13px] text-muted">Todavía no hay atenciones registradas.</p>
+        )}
+      </section>
     </>
   )
 }
@@ -248,33 +403,84 @@ export function PatientDetailView({
   onToggleDeceased: () => void
   onArchivePatient: () => void
 }) {
-  const vaccineCount = attentions.reduce((count, attention) => count + (attention.vaccineApplications?.length || 0), 0)
+  const vaccineCount = attentions.reduce(
+    (count, attention) => count + (attention.vaccineApplications?.length || 0),
+    0,
+  )
   const debtTotal = attentions.reduce((sum, attention) => sum + Number(attention.debtAmount), 0)
+  const pdfUrl = api.patientHistoryPdfUrl(patient.id)
 
   return (
     <>
-      <BackButton onClick={onBack}>Volver a ficha de cliente</BackButton>
+      <BackButton onClick={onBack}>Volver a la ficha del cliente</BackButton>
       <PageHeading
-        action={<div className="flex flex-wrap gap-2"><a className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50" href={api.patientHistoryPdfUrl(patient.id)}>Exportar PDF</a><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onArchivePatient}>Archivar paciente</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
-        description={`${patient.species === 'dog' ? 'Perro' : 'Gato'}${patient.breed ? ` · ${patient.breed}` : ''} · ${patient.approximateAge || 'Edad sin indicar'}`}
-        eyebrow="HISTORIAL CLÍNICO"
+        action={
+          <>
+            <a
+              className="hidden h-11 items-center justify-center rounded-control border border-control bg-surface px-4 text-sm font-medium text-text transition-colors hover:bg-raised lg:inline-flex lg:h-9 lg:px-3.5 lg:text-[13px]"
+              href={pdfUrl}
+            >
+              Exportar PDF
+            </a>
+            <Button className="max-sm:flex-1" onClick={onRecordAttention} variant="primary">
+              <Plus size={17} /> Registrar atención
+            </Button>
+            <Menu label="Más acciones del paciente">
+              <MenuItem onSelect={() => window.open(pdfUrl, '_blank', 'noopener')}>
+                Exportar PDF
+              </MenuItem>
+              <MenuItem onSelect={onToggleDeceased}>
+                {patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}
+              </MenuItem>
+              <MenuItem danger onSelect={onArchivePatient}>
+                Archivar paciente
+              </MenuItem>
+            </Menu>
+          </>
+        }
+        description={`${speciesLabel(patient.species)}${patient.breed ? ` · ${patient.breed}` : ''} · ${
+          patient.approximateAge || 'Edad sin indicar'
+        }`}
         title={patient.name}
       />
-      {patient.deceased && <p className="-mt-3 mb-4 text-xs text-slate-500">Paciente marcado como fallecido; sus recordatorios están suspendidos.</p>}
-      <div className="mb-[18px] grid grid-cols-3 gap-3 max-[650px]:gap-2">
-        <StatCard label="Atenciones" value={String(attentions.length)} />
-        <StatCard label="Deuda acumulada" value={formatMoney(debtTotal)} />
-        <StatCard label="Vacunas registradas" value={String(vaccineCount)} />
-      </div>
-      <Panel>
-        <PanelHeading description="Registro clínico y seguimiento del paciente" title="Historial de atenciones" />
+
+      {patient.deceased && (
+        <p className="mb-4 rounded-control bg-warning-bg px-3 py-2 text-[13px] text-warning-ink">
+          Paciente marcado como fallecido. Sus recordatorios están suspendidos.
+        </p>
+      )}
+
+      <StatStrip>
+        <Stat label="Atenciones" value={String(attentions.length)} />
+        <Stat
+          label="Deuda acumulada"
+          tone={debtTotal > 0 ? 'danger' : 'default'}
+          value={formatMoney(debtTotal)}
+        />
+        <Stat label="Vacunas registradas" value={String(vaccineCount)} />
+      </StatStrip>
+
+      <section className="mt-8">
+        <div className="flex items-baseline justify-between gap-3">
+          <div>
+            <h2 className="text-[15px] font-semibold text-text">Historial de atenciones</h2>
+            <p className="mt-0.5 text-[13px] text-muted">Registro clínico y seguimiento del paciente</p>
+          </div>
+          <span className="text-[13px] text-muted">{attentions.length}</span>
+        </div>
+
         {attentions.length ? (
-          <AttentionTimeline
-            attentions={attentions}
-            onDeleteAttachment={onDeleteAttachment}
-            onDeleteAttention={onDeleteAttention}
-            onEditAttention={onEditAttention}
-          />
+          <div className="mt-2 border-t border-rule">
+            {attentions.map((attention) => (
+              <AttentionRow
+                attention={attention}
+                key={attention.id}
+                onDeleteAttachment={onDeleteAttachment}
+                onDeleteAttention={onDeleteAttention}
+                onEditAttention={onEditAttention}
+              />
+            ))}
+          </div>
         ) : (
           <EmptyState
             action="Registrar atención"
@@ -284,150 +490,195 @@ export function PatientDetailView({
             title="Todavía no hay atenciones"
           />
         )}
-      </Panel>
+      </section>
     </>
   )
 }
 
 export function BackButton({ children, onClick }: { children: string; onClick: () => void }) {
   return (
-    <button className="mb-[18px] flex items-center gap-1 bg-transparent p-0 text-[11px] text-slate-500 hover:text-brand-800" onClick={onClick} type="button">
+    <button
+      className="mb-4 inline-flex items-center gap-1 rounded-control py-1 text-[13px] text-muted transition-colors hover:text-text"
+      onClick={onClick}
+      type="button"
+    >
       <ChevronLeft size={16} /> {children}
     </button>
   )
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="min-h-[85px] rounded-xl border border-line bg-white px-4 py-3.5 shadow-sm max-[650px]:px-2">
-      <span className="block text-[10px] text-muted max-[650px]:text-[9px]">{label}</span>
-      <strong className="mt-1.5 block font-display text-xl font-bold text-brand-800 max-[650px]:text-[15px]">{value}</strong>
-    </div>
-  )
-}
-
-function ContactValue({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <span className="mb-1 block text-[10px] text-muted">{label}</span>
-      <strong className="text-[11px] text-slate-700">{value}</strong>
-    </div>
-  )
-}
-
-function ClientAttentionHistory({ items }: { items: ClientAttention[] }) {
-  return (
-    <Panel>
-      <PanelHeading description="Actividad clínica de sus pacientes" title="Historial de atenciones" />
-      {items.length ? (
-        <div className="px-5 py-1">
-          {items.map((item) => (
-            <article className="flex gap-3 border-b border-slate-100 py-4 last:border-0" key={item.id}>
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-50 text-brand-700"><Activity size={17} /></span>
-              <div className="min-w-0 flex-1">
-                <div className="flex justify-between gap-2">
-                  <div>
-                    <strong className="block text-xs text-slate-700">{item.patientName} · {item.types.map(attentionTypeLabel).join(' + ')}</strong>
-                    <span className="mt-1 block text-[10px] text-muted">{formatDate(item.dateTime)}</span>
-                  </div>
-                  <span className="h-fit whitespace-nowrap rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-500">
-                    {Number(item.debtAmount) > 0 ? `Debe ${formatMoney(Number(item.debtAmount))}` : 'Al día'}
-                  </span>
-                </div>
-                {item.reason && <p className="mt-2 text-[11px] text-slate-500">{item.reason}</p>}
-                <div className="mt-2 flex gap-5 border-t border-slate-100 pt-2 text-[10px] text-muted">
-                  <span>Cobrado <strong className="ml-1 text-slate-600">{formatMoney(Number(item.chargedAmount))}</strong></span>
-                  <span>Adeudado <strong className="ml-1 text-slate-600">{formatMoney(Number(item.debtAmount))}</strong></span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <p className="p-5 text-center text-xs text-muted">Todavía no hay atenciones registradas.</p>
-      )}
-    </Panel>
-  )
-}
-
-function AttentionTimeline({
-  attentions,
+function AttentionRow({
+  attention,
   onEditAttention,
   onDeleteAttention,
   onDeleteAttachment,
 }: {
-  attentions: Attention[]
+  attention: Attention
   onEditAttention?: (attention: Attention) => void
   onDeleteAttention?: (attentionId: number) => void
   onDeleteAttachment: (attentionId: number, attachmentId: number) => void
 }) {
+  const debt = Number(attention.debtAmount)
   return (
-    <div className="px-5 py-1">
-      {attentions.map((attention) => (
-        <article className="flex gap-3 border-b border-slate-100 py-4 last:border-0" key={attention.id}>
-          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-50 text-brand-700"><Activity size={17} /></span>
-          <div className="min-w-0 flex-1">
-            <div className="flex justify-between gap-2">
-              <div>
-                <strong className="block text-xs text-slate-700">{attention.types.map(attentionTypeLabel).join(' + ')}</strong>
-                <span className="mt-1 block text-[10px] text-muted">{formatDate(attention.dateTime)}</span>
-              </div>
-              <span className="h-fit whitespace-nowrap rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-500">
-                {Number(attention.debtAmount) > 0 ? `Debe ${formatMoney(Number(attention.debtAmount))}` : 'Al día'}
-              </span>
-            </div>
-            {attention.reason && <p className="mt-2 text-[11px] text-slate-500"><strong>Motivo:</strong> {attention.reason}</p>}
-            {attention.observations && <p className="mt-2 text-[11px] leading-relaxed text-slate-500">{attention.observations}</p>}
-            {attention.ultrasoundReport && <p className="mt-2 whitespace-pre-wrap text-[11px] leading-relaxed text-slate-600"><strong>Informe de ecografía:</strong> {attention.ultrasoundReport}</p>}
-            {attention.attachments?.map((attachment) => (
-              <div className="mt-2 text-[11px]" key={attachment.id}>
-                {attachment.mimeType?.startsWith('image/') ? (
-                  <div className="flex flex-col gap-1">
-                    <a href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
-                      <img
-                        alt={attachment.name}
-                        className="max-h-40 rounded-md border border-slate-100 object-cover"
-                        src={api.attachmentUrl(attention.id, attachment.id)}
-                      />
-                    </a>
-                    <div className="flex items-center gap-2">
-                      <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
-                        {attachment.name} · {Math.ceil(attachment.size / 1024)} KB
-                      </a>
-                      <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    {attachment.mimeType === 'application/pdf' && <FileText className="shrink-0 text-slate-400" size={14} />}
-                    <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
-                      {attachment.name} · {Math.ceil(attachment.size / 1024)} KB
-                    </a>
-                    <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
-                  </div>
+    <article className="border-b border-rule py-4 last:border-b-0">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-text">
+            {attention.types.map(attentionTypeLabel).join(' + ')}
+          </p>
+          <p className="mt-0.5 text-[13px] text-muted">{formatDate(attention.dateTime)}</p>
+        </div>
+        <Badge tone={debt > 0 ? 'danger' : 'positive'}>
+          {debt > 0 ? `Debe ${formatMoney(debt)}` : 'Al día'}
+        </Badge>
+      </div>
+
+      {attention.reason && (
+        <p className="mt-2 text-[13px] text-text">
+          <span className="text-muted">Motivo: </span>
+          {attention.reason}
+        </p>
+      )}
+      {attention.observations && (
+        <p className="mt-1 whitespace-pre-wrap text-[13px] text-muted">{attention.observations}</p>
+      )}
+      {attention.ultrasoundReport && (
+        <p className="mt-2 whitespace-pre-wrap text-[13px] text-text">
+          <span className="text-muted">Informe de ecografía: </span>
+          {attention.ultrasoundReport}
+        </p>
+      )}
+
+      {attention.attachments && attention.attachments.length > 0 && (
+        <div className="mt-3 grid gap-2">
+          {attention.attachments.map((attachment) => {
+            const url = api.attachmentUrl(attention.id, attachment.id)
+            const isImage = attachment.mimeType?.startsWith('image/')
+            return (
+              <div key={attachment.id}>
+                {isImage && (
+                  <a href={url} rel="noreferrer" target="_blank">
+                    <img
+                      alt={attachment.name}
+                      className="max-h-44 rounded-control border border-border object-cover"
+                      src={url}
+                    />
+                  </a>
                 )}
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+                  {attachment.mimeType === 'application/pdf' && (
+                    <FileText className="shrink-0 text-muted" size={14} />
+                  )}
+                  <a
+                    className="text-accent underline-offset-2 hover:underline"
+                    href={url}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {attachment.name}
+                  </a>
+                  <span className="text-muted">{Math.ceil(attachment.size / 1024)} KB</span>
+                  <button
+                    className="text-[13px] text-danger hover:underline"
+                    onClick={() => onDeleteAttachment(attention.id, attachment.id)}
+                    type="button"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
-            ))}
-            {attention.vaccineApplications?.map((application) => (
-              <span className="mr-1.5 mt-1 inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-[10px] text-brand-700" key={application.vaccineId}>
-                <Syringe size={14} />{application.vaccineName}
-              </span>
-            ))}
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2 text-[10px] text-muted">
-              <div className="flex gap-5">
-                <span>Cobrado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.chargedAmount))}</strong></span>
-                <span>Adeudado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.debtAmount))}</strong></span>
-              </div>
-              <div className="flex gap-2">
-                {onEditAttention && <Button onClick={() => onEditAttention(attention)}>Editar</Button>}
-                {onDeleteAttention && <Button onClick={() => onDeleteAttention(attention.id)}>Eliminar</Button>}
-              </div>
-            </div>
+            )
+          })}
+        </div>
+      )}
+
+      {attention.vaccineApplications && attention.vaccineApplications.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {attention.vaccineApplications.map((application) => (
+            <span
+              className="inline-flex h-6 items-center gap-1 rounded-full bg-accent-soft px-2 text-xs text-accent-ink"
+              key={application.vaccineId}
+            >
+              <Syringe size={12} /> {application.vaccineName}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted">
+          <span>
+            Cobrado{' '}
+            <strong className="font-medium tabular-nums text-text">
+              {formatMoney(Number(attention.chargedAmount))}
+            </strong>
+          </span>
+          <span>
+            Adeudado{' '}
+            <strong className="font-medium tabular-nums text-text">{formatMoney(debt)}</strong>
+          </span>
+        </div>
+        <div className="flex gap-1">
+          {onEditAttention && (
+            <Button onClick={() => onEditAttention(attention)} variant="ghost">
+              Editar
+            </Button>
+          )}
+          {onDeleteAttention && (
+            <Button onClick={() => onDeleteAttention(attention.id)} variant="danger">
+              Eliminar
+            </Button>
+          )}
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function ClientHistoryRow({ item }: { item: ClientAttention }) {
+  const debt = Number(item.debtAmount)
+  return (
+    <li className="border-b border-rule py-3 last:border-b-0">
+      <div className="flex items-start gap-2.5">
+        <Activity className="mt-0.5 shrink-0 text-faint" size={16} strokeWidth={1.7} />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <p className="min-w-0 text-[13px] text-text">
+              <strong className="font-medium">{item.patientName}</strong>
+              <span className="text-muted"> · {item.types.map(attentionTypeLabel).join(' + ')}</span>
+            </p>
+            <span className={`text-[13px] tabular-nums ${debt > 0 ? 'text-danger' : 'text-muted'}`}>
+              {debt > 0 ? formatMoney(debt) : 'Al día'}
+            </span>
           </div>
-        </article>
-      ))}
+          <p className="mt-0.5 text-xs text-muted">{formatDate(item.dateTime)}</p>
+          {item.reason && <p className="mt-1 text-[13px] text-muted">{item.reason}</p>}
+        </div>
+      </div>
+    </li>
+  )
+}
+
+function ContactValue({
+  label,
+  value,
+  warning,
+}: {
+  label: string
+  value: string
+  warning?: string
+}) {
+  return (
+    <div>
+      <dt className="text-xs text-muted">{label}</dt>
+      <dd className="mt-0.5 break-words text-sm text-text">{value}</dd>
+      {warning && <p className="mt-1 text-xs text-warning-ink">{warning}</p>}
     </div>
   )
+}
+
+function speciesLabel(species: string) {
+  return species === 'dog' ? 'Perro' : 'Gato'
 }
 
 function formatDate(value: string) {

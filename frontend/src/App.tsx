@@ -111,7 +111,7 @@ export function App() {
   }
 
   if (!sessionReady) {
-    return <main className="grid min-h-screen place-items-center bg-canvas" aria-label="Cargando sesión">Cargando…</main>
+    return <main className="grid min-h-screen place-items-center bg-ground text-sm text-muted" aria-label="Cargando sesión">Cargando…</main>
   }
 
   if (!user) {
