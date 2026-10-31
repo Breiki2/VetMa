@@ -101,6 +101,7 @@ export const api = {
   },
   deleteAttachment: (attentionId: number, attachmentId: number) => request<void>(`/api/attentions/${attentionId}/attachments/${attachmentId}`, { method: 'DELETE' }),
   attachmentUrl: (attentionId: number, attachmentId: number) => `${base}/api/attentions/${attentionId}/attachments/${attachmentId}`,
+  patientHistoryPdfUrl: (patientId: number) => `${base}/api/patients/${patientId}/history.pdf`,
   reminders: (status?: string) => request<{ items: VaccineReminder[] }>(`/api/reminders${status ? `?status=${encodeURIComponent(status)}` : ''}`).then((response) => response.items),
   generateMissingReminders: () => request<{ generated: number }>('/api/reminders/generate-missing', { method: 'POST', body: JSON.stringify({}) }),
   cancelReminder: (id: number) => request<VaccineReminder>(`/api/reminders/${id}/cancel`, { method: 'POST', body: JSON.stringify({}) }),

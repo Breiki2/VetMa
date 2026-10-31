@@ -220,7 +220,7 @@ export function PatientDetailView({
     <>
       <BackButton onClick={onBack}>Volver a ficha de cliente</BackButton>
       <PageHeading
-        action={<div className="flex flex-wrap gap-2"><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
+        action={<div className="flex flex-wrap gap-2"><a className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50" href={api.patientHistoryPdfUrl(patient.id)}>Exportar PDF</a><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
         description={`${patient.species === 'dog' ? 'Perro' : 'Gato'}${patient.breed ? ` · ${patient.breed}` : ''} · ${patient.approximateAge || 'Edad sin indicar'}`}
         eyebrow="HISTORIAL CLÍNICO"
         title={patient.name}
