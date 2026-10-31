@@ -140,7 +140,7 @@ export function App() {
       {section === 'Recordatorios' && <RemindersPage />}
       {section === 'Vacunas' && <VaccinesPage />}
       {section === 'Usuarios' && user.role === 'admin' && <UsersPage currentUserId={user.id} />}
-      {section === 'Configuración' && <SettingsPage user={user} />}
+      {section === 'Configuración' && <SettingsPage user={user} onUserUpdate={setUser} />}
     </AppShell>
   )
 }

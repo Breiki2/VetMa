@@ -39,6 +39,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
       ? Object.values(payload.details).join(' ')
       : payload.error === 'invalid_credentials'
         ? 'Email o contraseña incorrectos.'
+        : payload.error === 'current_password_invalid'
+          ? 'La contraseña actual no es correcta.'
         : 'Ocurrió un error. Revisá los datos e intentá otra vez.'
     throw new Error(message)
   }
@@ -111,8 +113,13 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  updateUser: (id: number, data: { name?: string; email?: string; role?: string; active?: boolean; password?: string }) => request<AdminUser>(`/api/admin/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deactivateUser: (id: number) => request<void>(`/api/admin/users/${id}`, { method: 'DELETE' }),
+  updateProfile: (data: { name: string; email: string }) => request<SessionProfile>('/api/me', { method: 'PATCH', body: JSON.stringify(data) }),
+  changePassword: (data: { currentPassword: string; newPassword: string }) => request<{ ok: true }>('/api/me/password', { method: 'PATCH', body: JSON.stringify(data) }),
 }
+
+type SessionProfile = { id: number; name: string; email: string; role: string }
 
 export type AdminUser = {
   id: number

@@ -62,4 +62,29 @@ final class AdminUserControllerTest extends ApiWebTestCase
             ->find($adminId);
         self::assertNotSame('Correct-Horse-42!', $reloaded->getPassword());
     }
+
+    public function testAdminCanEditAndResetAnotherAccountPassword(): void
+    {
+        $this->createUser(role: 'admin');
+        $this->createUser('old@example.test');
+        $this->logIn();
+        $target = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'old@example.test']);
+
+        $this->browser->jsonRequest('PATCH', '/api/admin/users/'.$target->getId(), [
+            'name' => 'Dra. Nueva',
+            'email' => 'new@example.test',
+            'password' => 'Reset-Password-987!',
+        ], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+
+        self::assertResponseIsSuccessful();
+        $updated = json_decode((string) $this->browser->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        self::assertSame('Dra. Nueva', $updated['name']);
+        self::assertSame('new@example.test', $updated['email']);
+        self::assertArrayNotHasKey('password', $updated);
+
+        $this->browser->request('POST', '/api/logout', server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/csrf-token');
+        $this->browser->jsonRequest('POST', '/api/login', ['email' => 'new@example.test', 'password' => 'Reset-Password-987!'], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseIsSuccessful();
+    }
 }

@@ -8,6 +8,7 @@ import { Button, FormActions, FormField, formStyles, inputStyles, Modal, PageHea
 export function UsersPage({ currentUserId }: { currentUserId: number }) {
   const [users, setUsers] = useState<AdminUser[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null)
   const [error, setError] = useState('')
 
   async function refreshUsers() {
@@ -46,6 +47,21 @@ export function UsersPage({ currentUserId }: { currentUserId: number }) {
     }
   }
 
+  async function updateUser(formData: FormData) {
+    if (!editingUser) return
+    try {
+      const password = String(formData.get('password'))
+      await api.updateUser(editingUser.id, {
+        name: String(formData.get('name')),
+        email: String(formData.get('email')),
+        role: String(formData.get('role')),
+        ...(password ? { password } : {}),
+      })
+      setEditingUser(null)
+      await refreshUsers()
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
   return (
     <>
       {error && <Toast message={error} onDismiss={() => setError('')} />}
@@ -69,6 +85,7 @@ export function UsersPage({ currentUserId }: { currentUserId: number }) {
                   <td className="px-4">{user.role === 'admin' ? 'Administrador' : 'Veterinario'}</td>
                   <td className="px-4">{user.active ? 'Activo' : 'Desactivado'}</td>
                   <td className="px-4 text-right">
+                    <Button onClick={() => setEditingUser(user)}>Editar</Button>
                     {user.active && user.id !== currentUserId && (
                       <Button onClick={() => void deactivateUser(user.id)}>Desactivar</Button>
                     )}
@@ -80,31 +97,32 @@ export function UsersPage({ currentUserId }: { currentUserId: number }) {
         </div>
       </Panel>
       {isDialogOpen && <UserDialog onClose={() => setIsDialogOpen(false)} onSave={createUser} />}
+      {editingUser && <UserDialog user={editingUser} onClose={() => setEditingUser(null)} onSave={updateUser} />}
     </>
   )
 }
 
-function UserDialog({ onClose, onSave }: { onClose: () => void; onSave: (data: FormData) => Promise<void> }) {
+function UserDialog({ user, onClose, onSave }: { user?: AdminUser; onClose: () => void; onSave: (data: FormData) => Promise<void> }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     await onSave(new FormData(event.currentTarget))
   }
 
   return (
-    <Modal eyebrow="ADMINISTRACIÓN" onClose={onClose} title="Crear usuario">
+    <Modal eyebrow="ADMINISTRACIÓN" onClose={onClose} title={user ? 'Editar usuario' : 'Crear usuario'}>
       <form className={formStyles} onSubmit={submit}>
-        <FormField label="Nombre"><input className={inputStyles} name="name" required /></FormField>
-        <FormField label="Email"><input className={inputStyles} name="email" required type="email" /></FormField>
+        <FormField label="Nombre"><input className={inputStyles} defaultValue={user?.name} name="name" required /></FormField>
+        <FormField label="Email"><input className={inputStyles} defaultValue={user?.email} name="email" required type="email" /></FormField>
         <FormField label="Rol">
-          <select className={inputStyles} name="role"><option value="veterinarian">Veterinario</option><option value="admin">Administrador</option></select>
+          <select className={inputStyles} defaultValue={user?.role ?? 'veterinarian'} name="role"><option value="veterinarian">Veterinario</option><option value="admin">Administrador</option></select>
         </FormField>
-        <FormField label="Contraseña inicial">
-          <input className={inputStyles} minLength={8} name="password" required type="password" />
-          <span className="text-[10px] font-normal text-slate-400">Mínimo 8 caracteres</span>
+        <FormField label={user ? 'Restablecer contraseña' : 'Contraseña inicial'} optional={Boolean(user)}>
+          <input className={inputStyles} minLength={8} name="password" required={!user} type="password" />
+          <span className="text-[10px] font-normal text-slate-400">{user ? 'Dejá vacío para conservar la contraseña actual.' : 'Mínimo 8 caracteres'}</span>
         </FormField>
         <FormActions>
           <Button onClick={onClose} type="button">Cancelar</Button>
-          <Button type="submit" variant="primary">Crear usuario</Button>
+          <Button type="submit" variant="primary">{user ? 'Guardar cambios' : 'Crear usuario'}</Button>
         </FormActions>
       </form>
     </Modal>
