@@ -1,0 +1,33 @@
+security:
+    password_hashers:
+        App\Entity\User: auto
+    providers:
+        users:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt|assets)/
+            security: false
+        main:
+            lazy: true
+            provider: users
+            user_checker: App\Security\ActiveUserChecker
+            entry_point: App\Security\ApiEntryPoint
+            json_login:
+                check_path: api_login
+                username_path: email
+                password_path: password
+                success_handler: App\Security\JsonLoginSuccessHandler
+                failure_handler: App\Security\JsonLoginFailureHandler
+            login_throttling:
+                max_attempts: 5
+            logout:
+                path: api_logout
+                invalidate_session: true
+
+    access_control:
+        - { path: ^/api/(health|csrf-token|login)$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

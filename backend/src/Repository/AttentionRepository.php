@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Attention;
+use App\Entity\Client;
+use App\Entity\Patient;
+use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class AttentionRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Attention::class);
+    }
+
+    public function findOwnedBy(int $id, User $owner): ?Attention
+    {
+        return $this->createQueryBuilder('attention')
+            ->join('attention.patient', 'patient')->join('patient.client', 'client')
+            ->andWhere('attention.id = :id')->andWhere('client.owner = :owner')
+            ->setParameter('id', $id)->setParameter('owner', $owner)
+            ->getQuery()->getOneOrNullResult();
+    }
+
+    /** @return list<Attention> */
+    public function findForPatient(Patient $patient): array
+    {
+        return $this->findBy(['patient' => $patient], ['dateTime' => 'DESC', 'id' => 'DESC']);
+    }
+
+    public function debtForClient(Client $client): string
+    {
+        $amounts = $this->createQueryBuilder('attention')->select('attention.debtAmount')
+            ->join('attention.patient', 'patient')->andWhere('patient.client = :client')
+            ->setParameter('client', $client)->getQuery()->getSingleColumnResult();
+
+        $cents = 0;
+        foreach ($amounts as $amount) {
+            if (preg_match('/^(\d+)(?:\.(\d{1,2}))?$/', (string) $amount, $matches)) {
+                $cents += ((int) $matches[1] * 100) + (int) str_pad($matches[2] ?? '', 2, '0');
+            }
+        }
+
+        return intdiv($cents, 100).'.'.str_pad((string) ($cents % 100), 2, '0', STR_PAD_LEFT);
+    }
+
+    /** @return list<Attention> */
+    public function findForClient(Client $client): array
+    {
+        return $this->createQueryBuilder('attention')->join('attention.patient', 'patient')
+            ->andWhere('patient.client = :client')->setParameter('client', $client)
+            ->orderBy('attention.dateTime', 'DESC')->addOrderBy('attention.id', 'DESC')
+            ->getQuery()->getResult();
+    }
+
+    /** @return list<array{client: Client, debt: string}> */
+    public function clientsWithDebt(User $owner): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()->select('client, SUM(attention.debtAmount) AS debt')
+            ->from(Client::class, 'client')->join('client.patients', 'patient')->join('patient.attentions', 'attention')
+            ->andWhere('client.owner = :owner')->andWhere('client.archived = false')
+            ->groupBy('client.id')->having('SUM(attention.debtAmount) > 0')->orderBy('debt', 'DESC')
+            ->setParameter('owner', $owner)->getQuery()->getResult();
+    }
+}
