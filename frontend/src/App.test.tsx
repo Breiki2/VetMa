@@ -229,6 +229,61 @@ describe('VetMa workspace', () => {
       expect(screen.getByText('Inactiva')).toBeInTheDocument()
     })
   })
+
+  it('supports multiple vaccines with batch number and displays inline image preview for attachments', async () => {
+    const client = { id: 7, name: 'Ana', surname: 'Pérez', phone: '112233', debtTotal: '0.00' }
+    const patient = { id: 8, name: 'Mora', species: 'cat', sex: 'female', castrated: true, approximateAge: '4 años' }
+    const attention = {
+      id: 9,
+      dateTime: '2026-10-30T13:00:00.000Z',
+      types: ['vacuna', 'ecografia'],
+      reason: 'Vacunación y eco',
+      observations: 'Todo bien',
+      chargedAmount: '20000.00',
+      debtAmount: '0.00',
+      attachments: [
+        { id: 101, name: 'ecografia.jpg', mimeType: 'image/jpeg', size: 204800 },
+        { id: 102, name: 'informe.pdf', mimeType: 'application/pdf', size: 51200 },
+      ],
+      vaccineApplications: [
+        { vaccineId: 1, vaccineName: 'Triple Felina', appliedAt: '2026-10-30T13:00:00.000Z', batchNumber: 'TF-999' },
+      ],
+    }
+
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = String(input)
+      if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
+      if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
+      if (url.endsWith('/api/login')) return Response.json(sessionUser('veterinarian'))
+      if (url.includes('/api/clients?q=')) {
+        return Response.json({ items: [client], pagination: { total: 1, page: 1, limit: 20 } })
+      }
+      if (url.includes('/api/clients/7?page=')) {
+        return Response.json({
+          ...client,
+          patients: [patient],
+          patientsPagination: { total: 1, page: 1, limit: 20 },
+          attentions: [],
+        })
+      }
+      if (url.endsWith('/api/vaccines?species=cat')) {
+        return Response.json([{ id: 1, name: 'Triple Felina', species: 'cat', active: true }])
+      }
+      if (url.endsWith('/api/patients/8/attentions')) {
+        return Response.json([attention])
+      }
+      throw new Error(`Unexpected request ${url}`)
+    })
+
+    render(<App />)
+    await signIn('veterinarian')
+    fireEvent.click(await screen.findByText('Ana Pérez'))
+    fireEvent.click(await screen.findByRole('button', { name: /Mora/ }))
+
+    expect(await screen.findByText('Triple Felina')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'ecografia.jpg' })).toBeInTheDocument()
+    expect(screen.getByText(/informe.pdf/)).toBeInTheDocument()
+  })
 })
 
 async function signIn(role: 'admin' | 'veterinarian') {

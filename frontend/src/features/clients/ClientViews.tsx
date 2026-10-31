@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Dog,
+  FileText,
   Plus,
   Search,
   Stethoscope,
@@ -379,9 +380,32 @@ function AttentionTimeline({
             {attention.observations && <p className="mt-2 text-[11px] leading-relaxed text-slate-500">{attention.observations}</p>}
             {attention.ultrasoundReport && <p className="mt-2 whitespace-pre-wrap text-[11px] leading-relaxed text-slate-600"><strong>Informe de ecografía:</strong> {attention.ultrasoundReport}</p>}
             {attention.attachments?.map((attachment) => (
-              <div className="mt-2 flex items-center gap-2 text-[11px]" key={attachment.id}>
-                <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">{attachment.name} · {Math.ceil(attachment.size / 1024)} KB</a>
-                <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
+              <div className="mt-2 text-[11px]" key={attachment.id}>
+                {attachment.mimeType?.startsWith('image/') ? (
+                  <div className="flex flex-col gap-1">
+                    <a href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
+                      <img
+                        alt={attachment.name}
+                        className="max-h-40 rounded-md border border-slate-100 object-cover"
+                        src={api.attachmentUrl(attention.id, attachment.id)}
+                      />
+                    </a>
+                    <div className="flex items-center gap-2">
+                      <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
+                        {attachment.name} · {Math.ceil(attachment.size / 1024)} KB
+                      </a>
+                      <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    {attachment.mimeType === 'application/pdf' && <FileText className="shrink-0 text-slate-400" size={14} />}
+                    <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">
+                      {attachment.name} · {Math.ceil(attachment.size / 1024)} KB
+                    </a>
+                    <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
+                  </div>
+                )}
               </div>
             ))}
             {attention.vaccineApplications?.map((application) => (

@@ -1,7 +1,10 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
+import { Plus, Trash2 } from 'lucide-react'
 import { localDateTime } from '../../shared/format'
 import type { Attention, Client, Patient } from '../../api'
 import { Button, FormActions, FormField, formStyles, inputStyles, Modal } from '../../shared/ui'
+
+type VaccineApp = { vaccineId: string; appliedAt: string; batchNumber: string; observations: string }
 
 export function ClientDialog({
   client,
@@ -95,12 +98,33 @@ export function AttentionDialog({
   onClose: () => void
   onSave: (data: FormData) => Promise<void>
 }) {
+  const [vaccineApps, setVaccineApps] = useState<VaccineApp[]>(
+    attention?.vaccineApplications?.length
+      ? attention.vaccineApplications.map((a) => ({
+          vaccineId: String(a.vaccineId),
+          appliedAt: a.appliedAt ? toDateOnly(a.appliedAt) : '',
+          batchNumber: a.batchNumber ?? '',
+          observations: a.observations ?? '',
+        }))
+      : [{ vaccineId: '', appliedAt: '', batchNumber: '', observations: '' }],
+  )
+
+  function updateApp(index: number, field: keyof VaccineApp, value: string) {
+    setVaccineApps((prev) => prev.map((app, i) => (i === index ? { ...app, [field]: value } : app)))
+  }
+
+  function addApp() {
+    setVaccineApps((prev) => [...prev, { vaccineId: '', appliedAt: '', batchNumber: '', observations: '' }])
+  }
+
+  function removeApp(index: number) {
+    setVaccineApps((prev) => prev.filter((_, i) => i !== index))
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     await onSave(new FormData(event.currentTarget))
   }
-
-  const selectedVaccineId = attention?.vaccineApplications?.[0]?.vaccineId
 
   return (
     <Modal
@@ -180,20 +204,93 @@ export function AttentionDialog({
             rows={3}
           />
         </FormField>
-        <FormField label="Vacuna">
-          <select
-            className={inputStyles}
-            defaultValue={selectedVaccineId ?? ''}
-            name="vaccine"
-          >
-            <option value="">Seleccionar si corresponde</option>
-            {vaccines.map((vaccine) => (
-              <option key={vaccine.id} value={vaccine.id}>
-                {vaccine.name}
-              </option>
+
+        {/* Multi-vaccine section (RF-21) */}
+        <div>
+          <p className="mb-2 text-[11px] font-semibold text-slate-600">Vacunas aplicadas</p>
+          <div className="flex flex-col gap-3">
+            {vaccineApps.map((app, index) => (
+              <div className="rounded-lg border border-slate-200 p-3" key={index}>
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-semibold text-slate-500">Vacuna {index + 1}</span>
+                  {vaccineApps.length > 1 && (
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => removeApp(index)}
+                      type="button"
+                      aria-label="Eliminar vacuna"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2 max-[650px]:grid-cols-1">
+                  <div>
+                    <label className="mb-1 block text-[11px] text-slate-600">Vacuna</label>
+                    <select
+                      className={inputStyles}
+                      value={app.vaccineId}
+                      onChange={(e) => updateApp(index, 'vaccineId', e.target.value)}
+                    >
+                      <option value="">Seleccionar si corresponde</option>
+                      {vaccines.map((vaccine) => (
+                        <option key={vaccine.id} value={vaccine.id}>
+                          {vaccine.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] text-slate-600">
+                      Fecha de aplicación <span className="text-slate-400">(opcional)</span>
+                    </label>
+                    <input
+                      className={inputStyles}
+                      placeholder="Por defecto: fecha de atención"
+                      type="date"
+                      value={app.appliedAt}
+                      onChange={(e) => updateApp(index, 'appliedAt', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] text-slate-600">
+                      N° de lote <span className="text-slate-400">(opcional)</span>
+                    </label>
+                    <input
+                      className={inputStyles}
+                      placeholder="Ej. AB-1234"
+                      type="text"
+                      value={app.batchNumber}
+                      onChange={(e) => updateApp(index, 'batchNumber', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] text-slate-600">
+                      Observaciones <span className="text-slate-400">(opcional)</span>
+                    </label>
+                    <input
+                      className={inputStyles}
+                      placeholder="Reacción, próximo refuerzo…"
+                      type="text"
+                      value={app.observations}
+                      onChange={(e) => updateApp(index, 'observations', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
             ))}
-          </select>
-        </FormField>
+          </div>
+          <button
+            className="mt-2 flex items-center gap-1 text-[11px] text-brand-700 hover:text-brand-900"
+            onClick={addApp}
+            type="button"
+          >
+            <Plus size={14} /> Agregar otra vacuna
+          </button>
+        </div>
+
+        <input type="hidden" name="vaccineApplicationsJson" value={JSON.stringify(vaccineApps)} />
+
         <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
           <FormField label="Monto cobrado">
             <input
@@ -235,4 +332,10 @@ function toDateTimeLocal(iso?: string) {
   const d = new Date(iso)
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+function toDateOnly(iso: string) {
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }

@@ -158,10 +158,28 @@ export function ClientsPage({
     if (!selectedPatient || !selectedClient) return
     const types = data.getAll('types').map(String)
     const dateTime = new Date(String(data.get('dateTime'))).toISOString()
-    const selectedVaccine = vaccines.find((vaccine) => vaccine.id === Number(data.get('vaccine')))
-    const vaccineApplications = types.includes('vacuna') && selectedVaccine
-      ? [{ vaccineId: selectedVaccine.id, vaccineName: selectedVaccine.name, appliedAt: dateTime }]
-      : []
+
+    let vaccineApplications: { vaccineId: number; appliedAt: string; batchNumber?: string; observations?: string }[] = []
+    if (types.includes('vacuna')) {
+      try {
+        const parsed = JSON.parse(String(data.get('vaccineApplicationsJson') || '[]')) as {
+          vaccineId: string
+          appliedAt: string
+          batchNumber: string
+          observations: string
+        }[]
+        vaccineApplications = parsed
+          .filter((a) => a.vaccineId)
+          .map((a) => ({
+            vaccineId: Number(a.vaccineId),
+            appliedAt: a.appliedAt ? new Date(a.appliedAt).toISOString() : dateTime,
+            ...(a.batchNumber ? { batchNumber: a.batchNumber } : {}),
+            ...(a.observations ? { observations: a.observations } : {}),
+          }))
+      } catch {
+        vaccineApplications = []
+      }
+    }
 
     try {
       const attentionPayload = {
