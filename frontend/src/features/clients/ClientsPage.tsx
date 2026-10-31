@@ -153,6 +153,23 @@ export function ClientsPage({
     }
   }
 
+  async function toggleRemindersOptOut() {
+    if (!selectedClient) return
+    try {
+      const updated = await api.saveClient({ remindersOptOut: !selectedClient.remindersOptOut }, selectedClient.id)
+      setSelectedClient({ ...selectedClient, ...updated })
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
+  async function togglePatientDeceased() {
+    if (!selectedPatient || !selectedClient) return
+    try {
+      const updated = await api.updatePatient(selectedPatient.id, { deceased: !selectedPatient.deceased })
+      setSelectedPatient(updated)
+      setSelectedClient({ ...selectedClient, patients: selectedClient.patients.map((patient) => patient.id === updated.id ? updated : patient) })
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
   async function refreshClients() {
     try {
       const result = await api.clients(query)
@@ -177,6 +194,7 @@ export function ClientsPage({
               if (selectedPatient) setAttentions(await api.attentions(selectedPatient.id))
             } catch (cause) { setError(errorMessage(cause)) }
           })()}
+          onToggleDeceased={() => void togglePatientDeceased()}
           onBack={() => setSelectedPatient(null)}
           onRecordAttention={() => setDialog('attention')}
           patient={selectedPatient}
@@ -190,6 +208,7 @@ export function ClientsPage({
             else setSelectedClient(null)
           }}
           onSelectPatient={(patient) => void openPatient(patient)}
+          onToggleRemindersOptOut={() => void toggleRemindersOptOut()}
         />
       ) : (
         <ClientListView

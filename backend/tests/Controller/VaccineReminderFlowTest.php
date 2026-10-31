@@ -67,4 +67,52 @@ final class VaccineReminderFlowTest extends ApiWebTestCase
         $this->browser->request('GET', '/api/reminders?status=pending');
         self::assertCount(1, json_decode((string) $this->browser->getResponse()->getContent(), true)['items']);
     }
+
+    public function testOptOutCancelsPendingAndBlocksManualGenerationUntilWithdrawn(): void
+    {
+        $vet = $this->createUser();
+        $client = new Client($vet, 'Ana', 'Pérez', '112233');
+        $client->update(['email' => 'ana@example.test']);
+        $patient = new Patient($client, 'Mora', 'cat', 'female', true);
+        $vaccine = new Vaccine('Triple felina', 'cat');
+        foreach ([$client, $patient, $vaccine] as $entity) $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+        $this->logIn();
+        $this->browser->jsonRequest('POST', '/api/patients/'.$patient->getId().'/attentions', ['types' => ['vacuna'], 'vaccineApplications' => [['vaccineId' => $vaccine->getId()]]], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(201);
+
+        $this->browser->jsonRequest('PATCH', '/api/clients/'.$client->getId(), ['remindersOptOut' => true], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseIsSuccessful();
+        $this->browser->jsonRequest('POST', '/api/reminders/generate-missing', [], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertSame(0, json_decode((string) $this->browser->getResponse()->getContent(), true)['generated']);
+
+        $this->browser->jsonRequest('PATCH', '/api/clients/'.$client->getId(), ['remindersOptOut' => false], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->jsonRequest('POST', '/api/reminders/generate-missing', [], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/reminders?status=pending');
+        self::assertCount(1, json_decode((string) $this->browser->getResponse()->getContent(), true)['items']);
+    }
+
+    public function testDeceasedPatientRemindersStayBlockedUntilStateIsCorrected(): void
+    {
+        $vet = $this->createUser();
+        $client = new Client($vet, 'Ana', 'Pérez', '112233');
+        $client->update(['email' => 'ana@example.test']);
+        $patient = new Patient($client, 'Mora', 'cat', 'female', true);
+        $patient->update(['approximateAge' => '2 años']);
+        $vaccine = new Vaccine('Triple felina', 'cat');
+        foreach ([$client, $patient, $vaccine] as $entity) $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+        $this->logIn();
+        $this->browser->jsonRequest('POST', '/api/patients/'.$patient->getId().'/attentions', ['types' => ['vacuna'], 'vaccineApplications' => [['vaccineId' => $vaccine->getId()]]], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+
+        $this->browser->jsonRequest('PATCH', '/api/patients/'.$patient->getId(), ['deceased' => true], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseIsSuccessful();
+        $this->browser->jsonRequest('POST', '/api/reminders/generate-missing', [], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertSame(0, json_decode((string) $this->browser->getResponse()->getContent(), true)['generated']);
+
+        $this->browser->jsonRequest('PATCH', '/api/patients/'.$patient->getId(), ['deceased' => false], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->jsonRequest('POST', '/api/reminders/generate-missing', [], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/reminders?status=pending');
+        self::assertCount(1, json_decode((string) $this->browser->getResponse()->getContent(), true)['items']);
+    }
 }

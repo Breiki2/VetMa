@@ -81,6 +81,9 @@ class Client
 
     public function update(array $data): void
     {
+        if (array_key_exists('remindersOptOut', $data) && is_bool($data['remindersOptOut'])) {
+            $this->remindersOptOut = $data['remindersOptOut'];
+        }
         foreach (['name', 'surname', 'phone', 'email', 'address', 'notes'] as $field) {
             if (!array_key_exists($field, $data)) {
                 continue;

@@ -131,6 +131,7 @@ export type Client = {
   notes?: string | null
   debtTotal?: string
   emailMissing?: boolean
+  remindersOptOut?: boolean
 }
 
 export type ClientDetails = Client & {
@@ -160,6 +161,7 @@ export type Patient = {
   birthDate?: string
   approximateAge?: string
   castrated: boolean
+  deceased?: boolean
   attentions?: Attention[]
 }
 

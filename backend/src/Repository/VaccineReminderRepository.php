@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Client;
+use App\Entity\Patient;
 use App\Entity\VaccineReminder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,5 +35,19 @@ final class VaccineReminderRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('reminder')->join('reminder.application', 'application')->join('application.attention', 'attention')->join('attention.patient', 'patient')->join('patient.client', 'client')
             ->andWhere('reminder.id = :id')->andWhere('client.owner = :owner')->setParameter('id', $id)->setParameter('owner', $owner)->getQuery()->getOneOrNullResult();
+    }
+
+    /** @return list<VaccineReminder> */
+    public function findForClient(Client $client): array
+    {
+        return $this->createQueryBuilder('reminder')->join('reminder.application', 'application')->join('application.attention', 'attention')->join('attention.patient', 'patient')
+            ->andWhere('patient.client = :client')->setParameter('client', $client)->getQuery()->getResult();
+    }
+
+    /** @return list<VaccineReminder> */
+    public function findForPatient(Patient $patient): array
+    {
+        return $this->createQueryBuilder('reminder')->join('reminder.application', 'application')->join('application.attention', 'attention')
+            ->andWhere('attention.patient = :patient')->setParameter('patient', $patient)->getQuery()->getResult();
     }
 }

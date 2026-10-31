@@ -108,11 +108,13 @@ export function ClientDetailView({
   onBack,
   onAddPatient,
   onSelectPatient,
+  onToggleRemindersOptOut,
 }: {
   client: ClientDetails
   onBack: () => void
   onAddPatient: () => void
   onSelectPatient: (patient: Patient) => void
+  onToggleRemindersOptOut: () => void
 }) {
   return (
     <>
@@ -181,6 +183,17 @@ export function ClientDetailView({
           <ContactValue label="Dirección" value={client.address || '—'} />
         </div>
       </Panel>
+
+      <Panel className="mt-4 flex flex-wrap items-center justify-between gap-3 p-[17px_18px]">
+        <div>
+          <h2 className="font-display text-sm font-bold text-slate-700">Recordatorios por email</h2>
+          <p className="mt-1 text-[11px] text-muted">La preferencia se mantiene aunque cambie la dirección de correo.</p>
+        </div>
+        <label className="flex items-center gap-2 text-xs text-slate-700">
+          <input checked={Boolean(client.remindersOptOut)} className="accent-brand-700" onChange={onToggleRemindersOptOut} type="checkbox" />
+          No recibir recordatorios
+        </label>
+      </Panel>
     </>
   )
 }
@@ -191,12 +204,14 @@ export function PatientDetailView({
   onBack,
   onRecordAttention,
   onDeleteAttachment,
+  onToggleDeceased,
 }: {
   patient: Patient
   attentions: Attention[]
   onBack: () => void
   onRecordAttention: () => void
   onDeleteAttachment: (attentionId: number, attachmentId: number) => void
+  onToggleDeceased: () => void
 }) {
   const vaccineCount = attentions.reduce((count, attention) => count + (attention.vaccineApplications?.length || 0), 0)
   const debtTotal = attentions.reduce((sum, attention) => sum + Number(attention.debtAmount), 0)
@@ -205,11 +220,12 @@ export function PatientDetailView({
     <>
       <BackButton onClick={onBack}>Volver a ficha de cliente</BackButton>
       <PageHeading
-        action={<Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button>}
+        action={<div className="flex flex-wrap gap-2"><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
         description={`${patient.species === 'dog' ? 'Perro' : 'Gato'}${patient.breed ? ` · ${patient.breed}` : ''} · ${patient.approximateAge || 'Edad sin indicar'}`}
         eyebrow="HISTORIAL CLÍNICO"
         title={patient.name}
       />
+      {patient.deceased && <p className="-mt-3 mb-4 text-xs text-slate-500">Paciente marcado como fallecido; sus recordatorios están suspendidos.</p>}
       <div className="mb-[18px] grid grid-cols-3 gap-3 max-[650px]:gap-2">
         <StatCard label="Atenciones" value={String(attentions.length)} />
         <StatCard label="Deuda acumulada" value={formatMoney(debtTotal)} />

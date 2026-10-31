@@ -8,6 +8,7 @@ use App\Http\JsonInput;
 use App\Repository\ClientRepository;
 use App\Repository\PatientRepository;
 use App\Repository\AttentionRepository;
+use App\Repository\VaccineReminderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -90,7 +91,7 @@ final class ClientController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}', name: 'api_clients_update', methods: ['PATCH'])]
-    public function update(int $id, Request $request, JsonInput $input, ClientRepository $clients, AttentionRepository $attentions, EntityManagerInterface $entities): JsonResponse
+    public function update(int $id, Request $request, JsonInput $input, ClientRepository $clients, AttentionRepository $attentions, VaccineReminderRepository $reminders, EntityManagerInterface $entities): JsonResponse
     {
         $owner = $this->currentVeterinarian();
         $client = $owner instanceof User ? $clients->findOwnedBy($id, $owner) : null;
@@ -100,11 +101,15 @@ final class ClientController extends AbstractController
 
         $data = $input->read($request);
         $errors = $this->validate($data, creating: false);
+        if (array_key_exists('remindersOptOut', $data) && !is_bool($data['remindersOptOut'])) $errors['remindersOptOut'] = 'La preferencia de baja no es válida.';
         if ($errors !== []) {
             return $this->json(['error' => 'validation_failed', 'details' => $errors], 422);
         }
 
         $client->update($data);
+        if ($client->hasOptedOutOfReminders()) {
+            foreach ($reminders->findForClient($client) as $reminder) $reminder->cancel();
+        }
         $entities->flush();
 
         return $this->json($this->clientData($client, $attentions));
@@ -164,6 +169,7 @@ final class ClientController extends AbstractController
             'phone' => $client->getPhone(),
             'email' => $client->getEmail(),
             'emailMissing' => $client->getEmail() === null,
+            'remindersOptOut' => $client->hasOptedOutOfReminders(),
             'address' => $client->getAddress(),
             'notes' => $client->getNotes(),
             'archived' => $client->isArchived(),

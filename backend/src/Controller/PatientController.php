@@ -9,6 +9,7 @@ use App\Http\JsonInput;
 use App\Repository\ClientRepository;
 use App\Repository\PatientRepository;
 use App\Repository\AttentionRepository;
+use App\Repository\VaccineReminderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -76,7 +77,7 @@ final class PatientController extends AbstractController
     }
 
     #[Route('/api/patients/{id<\\d+>}', name: 'api_patients_update', methods: ['PATCH'])]
-    public function update(int $id, Request $request, JsonInput $input, PatientRepository $patients, EntityManagerInterface $entities): JsonResponse
+    public function update(int $id, Request $request, JsonInput $input, PatientRepository $patients, VaccineReminderRepository $reminders, EntityManagerInterface $entities): JsonResponse
     {
         $owner = $this->currentVeterinarian();
         $patient = $owner instanceof User ? $patients->findOwnedBy($id, $owner) : null;
@@ -91,6 +92,9 @@ final class PatientController extends AbstractController
         }
 
         $patient->update($this->normalized($data));
+        if ($patient->isDeceased()) {
+            foreach ($reminders->findForPatient($patient) as $reminder) $reminder->cancel();
+        }
         $entities->flush();
 
         return $this->json($this->patientData($patient));
