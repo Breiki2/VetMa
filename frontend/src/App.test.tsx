@@ -152,6 +152,55 @@ describe('VetMa workspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Configuración' }))
     expect(await screen.findByRole('heading', { name: 'Configuración' })).toBeInTheDocument()
   })
+
+  it('lets an administrator manage the global vaccine catalog', async () => {
+    let vaccineCreated = false
+    let vaccineActive = true
+    const vaccine = { id: 1, name: 'Antirrábica', species: 'both', active: true }
+
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init = {}) => {
+      const url = String(input)
+      const method = (init.method || 'GET').toUpperCase()
+
+      if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
+      if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
+      if (url.endsWith('/api/login')) return Response.json(sessionUser('admin', 'Admin Vet'))
+      if (url.includes('/api/clients?q=')) return Response.json({ items: [], pagination: { total: 0, page: 1, limit: 20 } })
+      if (url.endsWith('/api/vaccines') && method === 'GET') {
+        return Response.json(vaccineCreated ? [{ ...vaccine, active: vaccineActive }] : [])
+      }
+      if (url.endsWith('/api/vaccines') && method === 'POST') {
+        vaccineCreated = true
+        return Response.json(vaccine, { status: 201 })
+      }
+      if (url.endsWith('/api/vaccines/1') && method === 'DELETE') {
+        vaccineActive = false
+        return new Response(null, { status: 204 })
+      }
+
+      throw new Error(`Unexpected request ${method} ${url}`)
+    })
+
+    render(<App />)
+    await signIn('admin')
+    fireEvent.click(screen.getByRole('button', { name: 'Vacunas' }))
+    expect(await screen.findByRole('heading', { name: 'Vacunas' })).toBeInTheDocument()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Nueva vacuna' }))
+    fireEvent.change(screen.getByLabelText('Nombre de la vacuna'), { target: { value: 'Antirrábica' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Crear vacuna' }))
+
+    expect(await screen.findByText('Antirrábica')).toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/vaccines'),
+      expect.objectContaining({ method: 'POST' }),
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Desactivar' }))
+    await waitFor(() => {
+      expect(screen.getByText('Inactiva')).toBeInTheDocument()
+    })
+  })
 })
 
 async function signIn(role: 'admin' | 'veterinarian') {

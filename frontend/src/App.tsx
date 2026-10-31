@@ -138,7 +138,7 @@ export function App() {
       )}
       {section === 'Deudas' && <DebtsPage onOpenClient={openClient} />}
       {section === 'Recordatorios' && <RemindersPage />}
-      {section === 'Vacunas' && <VaccinesPage />}
+      {section === 'Vacunas' && <VaccinesPage isAdmin={user.role === 'admin'} />}
       {section === 'Usuarios' && user.role === 'admin' && <UsersPage currentUserId={user.id} />}
       {section === 'Configuración' && <SettingsPage user={user} onUserUpdate={setUser} />}
     </AppShell>

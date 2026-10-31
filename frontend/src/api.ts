@@ -80,7 +80,18 @@ export const api = {
       body: JSON.stringify(data),
     }),
   archivePatient: (id: number) => request<void>(`/api/patients/${id}`, { method: 'DELETE' }),
-  vaccines: (species: string) => request<Vaccine[]>(`/api/vaccines?species=${species}`),
+  vaccines: (species = '') => request<Vaccine[]>(species ? `/api/vaccines?species=${encodeURIComponent(species)}` : '/api/vaccines'),
+  createVaccine: (data: { name: string; species: string }) =>
+    request<Vaccine>('/api/vaccines', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  updateVaccine: (id: number, data: { name?: string; species?: string; active?: boolean }) =>
+    request<Vaccine>(`/api/vaccines/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  deactivateVaccine: (id: number) => request<void>(`/api/vaccines/${id}`, { method: 'DELETE' }),
   attentions: (patientId: number) => request<Attention[]>(`/api/patients/${patientId}/attentions`),
   saveAttention: (patientId: number, data: Partial<Attention>) =>
     request<Attention>(`/api/patients/${patientId}/attentions`, {
