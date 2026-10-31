@@ -1,0 +1,730 @@
+{
+  ".taste-skill/direction.json": {
+    "mtime": 1793470389.2471628,
+    "seen": 1793488938.0280938,
+    "ast_hash": "e2a5550e3e54880f87a528514490b373",
+    "semantic_hash": "e2a5550e3e54880f87a528514490b373",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-clients/report.json": {
+    "mtime": 1793470859.7085311,
+    "seen": 1793488938.0281017,
+    "ast_hash": "313657398a677b4c6e749f246ec08255",
+    "semantic_hash": "313657398a677b4c6e749f246ec08255",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-clients2/report.json": {
+    "mtime": 1793470992.1022377,
+    "seen": 1793488938.0281055,
+    "ast_hash": "f69ecb6c3d3a559134d32a03e41698e7",
+    "semantic_hash": "f69ecb6c3d3a559134d32a03e41698e7",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-clients3/report.json": {
+    "mtime": 1793471042.4373593,
+    "seen": 1793488938.0281084,
+    "ast_hash": "ce7659ba7cb47e932b00cd491ffce576",
+    "semantic_hash": "ce7659ba7cb47e932b00cd491ffce576",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-debts/report.json": {
+    "mtime": 1793470886.9043756,
+    "seen": 1793488938.0281107,
+    "ast_hash": "c76bad0ed716ea7fcc6ed99d2b33f609",
+    "semantic_hash": "c76bad0ed716ea7fcc6ed99d2b33f609",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-debts2/report.json": {
+    "mtime": 1793471042.845846,
+    "seen": 1793488938.028113,
+    "ast_hash": "1f824a0dd8047aad6e5f058e64de158e",
+    "semantic_hash": "1f824a0dd8047aad6e5f058e64de158e",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-reminders/report.json": {
+    "mtime": 1793470889.3556705,
+    "seen": 1793488938.0281153,
+    "ast_hash": "e0f2883973d10e3947a448d7add204e6",
+    "semantic_hash": "e0f2883973d10e3947a448d7add204e6",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-reminders2/report.json": {
+    "mtime": 1793471044.5339203,
+    "seen": 1793488938.028117,
+    "ast_hash": "0b4c90875a6b5b69928d36519c8f0bc6",
+    "semantic_hash": "0b4c90875a6b5b69928d36519c8f0bc6",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-settings/report.json": {
+    "mtime": 1793471043.707073,
+    "seen": 1793488938.028119,
+    "ast_hash": "d5c0435788d3f02d484d2f89ced79c2e",
+    "semantic_hash": "d5c0435788d3f02d484d2f89ced79c2e",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-users/report.json": {
+    "mtime": 1793471043.06174,
+    "seen": 1793488938.0281208,
+    "ast_hash": "85f52714f486456ff68d15064c9fe8b3",
+    "semantic_hash": "85f52714f486456ff68d15064c9fe8b3",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-users2/report.json": {
+    "mtime": 1793471123.0978415,
+    "seen": 1793488938.028123,
+    "ast_hash": "8269d4fde787853e8eb45709b7ec1e1b",
+    "semantic_hash": "8269d4fde787853e8eb45709b7ec1e1b",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-vaccines/report.json": {
+    "mtime": 1793470886.2967572,
+    "seen": 1793488938.0281248,
+    "ast_hash": "b015ecde5205bc01572677fbbe0d4204",
+    "semantic_hash": "b015ecde5205bc01572677fbbe0d4204",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-vaccines2/report.json": {
+    "mtime": 1793471042.840712,
+    "seen": 1793488938.0281267,
+    "ast_hash": "b2318789e80dcc5a0dba3c988a94b890",
+    "semantic_hash": "b2318789e80dcc5a0dba3c988a94b890",
+    "ast_empty": true
+  },
+  ".taste-skill/inspect-vaccines3/report.json": {
+    "mtime": 1793471122.6089602,
+    "seen": 1793488938.0281286,
+    "ast_hash": "59256b6c0b1a461b401f33f794e863ab",
+    "semantic_hash": "59256b6c0b1a461b401f33f794e863ab",
+    "ast_empty": true
+  },
+  "backend/bin/console": {
+    "mtime": 1793408100.1697772,
+    "seen": 1793488938.02813,
+    "ast_hash": "f1a4c27584bb438775c0e4ac60431066",
+    "semantic_hash": "f1a4c27584bb438775c0e4ac60431066"
+  },
+  "backend/bin/phpunit": {
+    "mtime": 1793466266.8976057,
+    "seen": 1793488938.0281923,
+    "ast_hash": "755ac2a58a065a406d7c74b8346989e7",
+    "semantic_hash": "755ac2a58a065a406d7c74b8346989e7"
+  },
+  "backend/compose.override.yaml": {
+    "mtime": 1793408196.9951568,
+    "seen": 1793488938.0282335,
+    "ast_hash": "f9947b186616f444f11f7f7f710d3be8",
+    "semantic_hash": "f9947b186616f444f11f7f7f710d3be8"
+  },
+  "backend/compose.yaml": {
+    "mtime": 1793408196.9951143,
+    "seen": 1793488938.0282693,
+    "ast_hash": "85a64c5ee8c0b3ddef65fbed74d85970",
+    "semantic_hash": "85a64c5ee8c0b3ddef65fbed74d85970"
+  },
+  "backend/composer.json": {
+    "mtime": 1793408197.0001943,
+    "seen": 1793488938.0283036,
+    "ast_hash": "65bb92bd1330a6f6395e9448e5db079c",
+    "semantic_hash": "65bb92bd1330a6f6395e9448e5db079c"
+  },
+  "backend/config/bundles.php": {
+    "mtime": 1793408216.5783222,
+    "seen": 1793488938.028336,
+    "ast_hash": "52ffb13372dc6b8723b9279f08fbc804",
+    "semantic_hash": "52ffb13372dc6b8723b9279f08fbc804"
+  },
+  "backend/config/packages/cache.yaml": {
+    "mtime": 1793408196.9867756,
+    "seen": 1793488938.0283785,
+    "ast_hash": "b6b1efc4d1fc4a463de33ffde5495a05",
+    "semantic_hash": "b6b1efc4d1fc4a463de33ffde5495a05"
+  },
+  "backend/config/packages/doctrine.yaml": {
+    "mtime": 1793408348.5598063,
+    "seen": 1793488938.0284178,
+    "ast_hash": "8dcdf007c00f00b162be7353c123afe4",
+    "semantic_hash": "8dcdf007c00f00b162be7353c123afe4"
+  },
+  "backend/config/packages/doctrine_migrations.yaml": {
+    "mtime": 1793408100.6277754,
+    "seen": 1793488938.0284588,
+    "ast_hash": "3dee9b4e2e44290acb6a7188895f8210",
+    "semantic_hash": "3dee9b4e2e44290acb6a7188895f8210"
+  },
+  "backend/config/packages/framework.yaml": {
+    "mtime": 1793463163.3758419,
+    "seen": 1793488938.028497,
+    "ast_hash": "3a0c38eaa67b6bd154182922777fa344",
+    "semantic_hash": "3a0c38eaa67b6bd154182922777fa344"
+  },
+  "backend/config/packages/mailer.yaml": {
+    "mtime": 1793408196.9904163,
+    "seen": 1793488938.0285342,
+    "ast_hash": "38d79b1c540fc4e37731f9894267be4e",
+    "semantic_hash": "38d79b1c540fc4e37731f9894267be4e"
+  },
+  "backend/config/packages/property_info.yaml": {
+    "mtime": 1793408196.9953687,
+    "seen": 1793488938.0285707,
+    "ast_hash": "974a0ce1b6fd72bf9cdc811034c43f4d",
+    "semantic_hash": "974a0ce1b6fd72bf9cdc811034c43f4d"
+  },
+  "backend/config/packages/routing.yaml": {
+    "mtime": 1793408196.9903364,
+    "seen": 1793488938.0286076,
+    "ast_hash": "71d9fd0fbb96604c19a6c7d0639ac36e",
+    "semantic_hash": "71d9fd0fbb96604c19a6c7d0639ac36e"
+  },
+  "backend/config/packages/security.yaml": {
+    "mtime": 1793408276.9510863,
+    "seen": 1793488938.0286438,
+    "ast_hash": "c2f88acf7ec1d801f2c41c11d09ad6f9",
+    "semantic_hash": "c2f88acf7ec1d801f2c41c11d09ad6f9"
+  },
+  "backend/config/packages/validator.yaml": {
+    "mtime": 1793408196.9954917,
+    "seen": 1793488938.02868,
+    "ast_hash": "6092edb135904f95a582cfc17988b986",
+    "semantic_hash": "6092edb135904f95a582cfc17988b986"
+  },
+  "backend/config/preload.php": {
+    "mtime": 1793408196.9868186,
+    "seen": 1793488938.0287158,
+    "ast_hash": "4aafda0691f3cff050786a1c25910ce1",
+    "semantic_hash": "4aafda0691f3cff050786a1c25910ce1"
+  },
+  "backend/config/reference.php": {
+    "mtime": 1793470143.2268555,
+    "seen": 1793488938.028749,
+    "ast_hash": "b73b1a8f55bad6210d35ef9be560cf5a",
+    "semantic_hash": "b73b1a8f55bad6210d35ef9be560cf5a"
+  },
+  "backend/config/routes.yaml": {
+    "mtime": 1793408100.4357762,
+    "seen": 1793488938.0287824,
+    "ast_hash": "394647da47c52107722d8ed2894eee10",
+    "semantic_hash": "394647da47c52107722d8ed2894eee10"
+  },
+  "backend/config/routes/framework.yaml": {
+    "mtime": 1793408196.986872,
+    "seen": 1793488938.028815,
+    "ast_hash": "0209eec2eef3ff5479f346528d8b4c7d",
+    "semantic_hash": "0209eec2eef3ff5479f346528d8b4c7d"
+  },
+  "backend/config/routes/security.yaml": {
+    "mtime": 1793408196.99546,
+    "seen": 1793488938.0288508,
+    "ast_hash": "112f10b281f54bd4e8899f4bff4910ee",
+    "semantic_hash": "112f10b281f54bd4e8899f4bff4910ee"
+  },
+  "backend/config/services.yaml": {
+    "mtime": 1793461965.583441,
+    "seen": 1793488938.028886,
+    "ast_hash": "3f625a1a5d94e341a10bf97dd86a1c28",
+    "semantic_hash": "3f625a1a5d94e341a10bf97dd86a1c28"
+  },
+  "backend/migrations/Version20261031021236.php": {
+    "mtime": 1793412773.3680053,
+    "seen": 1793488938.0289187,
+    "ast_hash": "00adf73559b6000016c054ebc87a9032",
+    "semantic_hash": "00adf73559b6000016c054ebc87a9032"
+  },
+  "backend/migrations/Version20261031090000.php": {
+    "mtime": 1793461702.952344,
+    "seen": 1793488938.0289526,
+    "ast_hash": "23b312886ae90e28a8001115328c236f",
+    "semantic_hash": "23b312886ae90e28a8001115328c236f"
+  },
+  "backend/migrations/Version20261031091000.php": {
+    "mtime": 1793461945.7025287,
+    "seen": 1793488938.0289853,
+    "ast_hash": "e6bf5db78e658943fc53960aa3a3b438",
+    "semantic_hash": "e6bf5db78e658943fc53960aa3a3b438"
+  },
+  "backend/migrations/Version20261031092000.php": {
+    "mtime": 1793462980.832132,
+    "seen": 1793488938.029018,
+    "ast_hash": "9b49908e880ed9d2e23dd3c36349940a",
+    "semantic_hash": "9b49908e880ed9d2e23dd3c36349940a"
+  },
+  "backend/migrations/Version20261031093000.php": {
+    "mtime": 1793463163.348842,
+    "seen": 1793488938.02905,
+    "ast_hash": "4863340e5615396af68db88599c323e1",
+    "semantic_hash": "4863340e5615396af68db88599c323e1"
+  },
+  "backend/public/index.php": {
+    "mtime": 1793408100.248777,
+    "seen": 1793488938.0290825,
+    "ast_hash": "2a59c5c883dd7a5d6ed4c1ffe0622b80",
+    "semantic_hash": "2a59c5c883dd7a5d6ed4c1ffe0622b80"
+  },
+  "backend/src/Attention/AttentionRegistration.php": {
+    "mtime": 1793462042.9550993,
+    "seen": 1793488938.029116,
+    "ast_hash": "3fe3798be83fdca47ee39116f1f40c3b",
+    "semantic_hash": "3fe3798be83fdca47ee39116f1f40c3b"
+  },
+  "backend/src/Attention/AttentionRegistrationResult.php": {
+    "mtime": 1793457695.7036593,
+    "seen": 1793488938.029152,
+    "ast_hash": "8f12619eb213d7de73ab51f62efe7d15",
+    "semantic_hash": "8f12619eb213d7de73ab51f62efe7d15"
+  },
+  "backend/src/Command/CreateAdminCommand.php": {
+    "mtime": 1793469131.4735944,
+    "seen": 1793488938.0291886,
+    "ast_hash": "de8b919e561bd3ac03d3ee0e2ac31b05",
+    "semantic_hash": "de8b919e561bd3ac03d3ee0e2ac31b05"
+  },
+  "backend/src/Command/SeedDemoCommand.php": {
+    "mtime": 1793470081.652096,
+    "seen": 1793488938.0292244,
+    "ast_hash": "486d2fce332828e7f22284585c72c8e9",
+    "semantic_hash": "486d2fce332828e7f22284585c72c8e9"
+  },
+  "backend/src/Command/SendVaccineRemindersCommand.php": {
+    "mtime": 1793462042.9840991,
+    "seen": 1793488938.029259,
+    "ast_hash": "7c919a20096e63a83cb289175041979f",
+    "semantic_hash": "7c919a20096e63a83cb289175041979f"
+  },
+  "backend/src/Controller/AdminUserController.php": {
+    "mtime": 1793458980.0775096,
+    "seen": 1793488938.029294,
+    "ast_hash": "1ab2912c29bba7440233e0e485fca51d",
+    "semantic_hash": "1ab2912c29bba7440233e0e485fca51d"
+  },
+  "backend/src/Controller/AttentionAttachmentController.php": {
+    "mtime": 1793461777.2241051,
+    "seen": 1793488938.0293298,
+    "ast_hash": "500ec0ce5cb636d18f61401a840a7e15",
+    "semantic_hash": "500ec0ce5cb636d18f61401a840a7e15"
+  },
+  "backend/src/Controller/AttentionController.php": {
+    "mtime": 1793461788.3830693,
+    "seen": 1793488938.0293653,
+    "ast_hash": "40d4bedc97021fd6a670db02b83c7d49",
+    "semantic_hash": "40d4bedc97021fd6a670db02b83c7d49"
+  },
+  "backend/src/Controller/AuthController.php": {
+    "mtime": 1793408277.012086,
+    "seen": 1793488938.0294065,
+    "ast_hash": "33ab488eedc1d0a4bb6d58267815466e",
+    "semantic_hash": "33ab488eedc1d0a4bb6d58267815466e"
+  },
+  "backend/src/Controller/ClientController.php": {
+    "mtime": 1793463051.6000197,
+    "seen": 1793488938.0294638,
+    "ast_hash": "c62ac4465f03fb37e2e0ec01181044b2",
+    "semantic_hash": "c62ac4465f03fb37e2e0ec01181044b2"
+  },
+  "backend/src/Controller/CurrentUserController.php": {
+    "mtime": 1793408430.8844845,
+    "seen": 1793488938.0294871,
+    "ast_hash": "583f4adcfe75bbdf4a275ffc5b1a08b8",
+    "semantic_hash": "583f4adcfe75bbdf4a275ffc5b1a08b8"
+  },
+  "backend/src/Controller/PatientController.php": {
+    "mtime": 1793462867.0154908,
+    "seen": 1793488938.0295074,
+    "ast_hash": "c77933053ef2617550af4fe36d22aa3d",
+    "semantic_hash": "c77933053ef2617550af4fe36d22aa3d"
+  },
+  "backend/src/Controller/PatientHistoryController.php": {
+    "mtime": 1793462226.0842907,
+    "seen": 1793488938.0295258,
+    "ast_hash": "a09978d68170591f970032e4e75781f6",
+    "semantic_hash": "a09978d68170591f970032e4e75781f6"
+  },
+  "backend/src/Controller/VaccineController.php": {
+    "mtime": 1793408538.3471,
+    "seen": 1793488938.0295432,
+    "ast_hash": "0af8725ecd58ec8ee3b529be5078604b",
+    "semantic_hash": "0af8725ecd58ec8ee3b529be5078604b"
+  },
+  "backend/src/Controller/VaccineReminderController.php": {
+    "mtime": 1793462897.2303712,
+    "seen": 1793488938.0295608,
+    "ast_hash": "46226c1db888608f1ac8d91047d2844f",
+    "semantic_hash": "46226c1db888608f1ac8d91047d2844f"
+  },
+  "backend/src/Entity/Attention.php": {
+    "mtime": 1793463018.657072,
+    "seen": 1793488938.0295775,
+    "ast_hash": "c010ff1f46eb0b8de22f6c270c43f031",
+    "semantic_hash": "c010ff1f46eb0b8de22f6c270c43f031"
+  },
+  "backend/src/Entity/AttentionAttachment.php": {
+    "mtime": 1793463141.5378766,
+    "seen": 1793488938.0295954,
+    "ast_hash": "b2a6a77417bae29a9222fb84e4965ffb",
+    "semantic_hash": "b2a6a77417bae29a9222fb84e4965ffb"
+  },
+  "backend/src/Entity/Client.php": {
+    "mtime": 1793463018.598072,
+    "seen": 1793488938.0296125,
+    "ast_hash": "7a334c45174918d3a32bf3edbb8472f9",
+    "semantic_hash": "7a334c45174918d3a32bf3edbb8472f9"
+  },
+  "backend/src/Entity/Patient.php": {
+    "mtime": 1793463018.6260722,
+    "seen": 1793488938.029629,
+    "ast_hash": "90ce54b5f6649df0a43c7033a10026d6",
+    "semantic_hash": "90ce54b5f6649df0a43c7033a10026d6"
+  },
+  "backend/src/Entity/User.php": {
+    "mtime": 1793408266.0661287,
+    "seen": 1793488938.0296447,
+    "ast_hash": "0f35dfb6eeb73d188694adb87c732552",
+    "semantic_hash": "0f35dfb6eeb73d188694adb87c732552"
+  },
+  "backend/src/Entity/Vaccine.php": {
+    "mtime": 1793408623.5578084,
+    "seen": 1793488938.0296612,
+    "ast_hash": "d786328e04be3297945555e2891b91a4",
+    "semantic_hash": "d786328e04be3297945555e2891b91a4"
+  },
+  "backend/src/Entity/VaccineApplication.php": {
+    "mtime": 1793469559.469513,
+    "seen": 1793488938.0296774,
+    "ast_hash": "3e45d07f581076e993afed8a1e35ddca",
+    "semantic_hash": "3e45d07f581076e993afed8a1e35ddca"
+  },
+  "backend/src/Entity/VaccineReminder.php": {
+    "mtime": 1793461934.9355764,
+    "seen": 1793488938.0296934,
+    "ast_hash": "1a128a5edaf6c8957f46c15cdc0cdd72",
+    "semantic_hash": "1a128a5edaf6c8957f46c15cdc0cdd72"
+  },
+  "backend/src/History/PatientHistoryPdf.php": {
+    "mtime": 1793462246.0472026,
+    "seen": 1793488938.0297098,
+    "ast_hash": "343e94bd302c6d31d1abc3949fae08bc",
+    "semantic_hash": "343e94bd302c6d31d1abc3949fae08bc"
+  },
+  "backend/src/Http/JsonInput.php": {
+    "mtime": 1793408407.478576,
+    "seen": 1793488938.0297265,
+    "ast_hash": "0c0467e2406522f49f44eac61bb161e0",
+    "semantic_hash": "0c0467e2406522f49f44eac61bb161e0"
+  },
+  "backend/src/Kernel.php": {
+    "mtime": 1793408100.3297765,
+    "seen": 1793488938.0297425,
+    "ast_hash": "a61a61238c184d4cb5787e99ac69618e",
+    "semantic_hash": "a61a61238c184d4cb5787e99ac69618e"
+  },
+  "backend/src/Reminder/VaccineReminderScheduler.php": {
+    "mtime": 1793462045.4390883,
+    "seen": 1793488938.0297594,
+    "ast_hash": "e28914cc247c9779756c083b0abad056",
+    "semantic_hash": "e28914cc247c9779756c083b0abad056"
+  },
+  "backend/src/Repository/AttentionRepository.php": {
+    "mtime": 1793463051.5720196,
+    "seen": 1793488938.0297763,
+    "ast_hash": "817e1e2fea8a62997465741be62ba6b0",
+    "semantic_hash": "817e1e2fea8a62997465741be62ba6b0"
+  },
+  "backend/src/Repository/ClientRepository.php": {
+    "mtime": 1793462858.9035227,
+    "seen": 1793488938.0297935,
+    "ast_hash": "7c41f05af691b0e4426418b17378fed4",
+    "semantic_hash": "7c41f05af691b0e4426418b17378fed4"
+  },
+  "backend/src/Repository/PatientRepository.php": {
+    "mtime": 1793462866.980491,
+    "seen": 1793488938.0298104,
+    "ast_hash": "f69c52710e3be984b6f5d57c37a36694",
+    "semantic_hash": "f69c52710e3be984b6f5d57c37a36694"
+  },
+  "backend/src/Repository/UserRepository.php": {
+    "mtime": 1793408266.0961287,
+    "seen": 1793488938.0298276,
+    "ast_hash": "9f8a4fcb73583c35b95c76cf268361a8",
+    "semantic_hash": "9f8a4fcb73583c35b95c76cf268361a8"
+  },
+  "backend/src/Repository/VaccineApplicationRepository.php": {
+    "mtime": 1793461958.4374726,
+    "seen": 1793488938.029844,
+    "ast_hash": "30a2e2055039ed1b03e4036a5c4547b8",
+    "semantic_hash": "30a2e2055039ed1b03e4036a5c4547b8"
+  },
+  "backend/src/Repository/VaccineReminderRepository.php": {
+    "mtime": 1793462897.1973715,
+    "seen": 1793488938.029861,
+    "ast_hash": "904ff4d70027f11ca7b7b1a420d560a8",
+    "semantic_hash": "904ff4d70027f11ca7b7b1a420d560a8"
+  },
+  "backend/src/Repository/VaccineRepository.php": {
+    "mtime": 1793408538.3191001,
+    "seen": 1793488938.0298784,
+    "ast_hash": "3f81a321977a3734e8346266607038f0",
+    "semantic_hash": "3f81a321977a3734e8346266607038f0"
+  },
+  "backend/src/Security/ActiveUserChecker.php": {
+    "mtime": 1793408286.22105,
+    "seen": 1793488938.029895,
+    "ast_hash": "33ffc4b6129b844df418e775e2ef0bb0",
+    "semantic_hash": "33ffc4b6129b844df418e775e2ef0bb0"
+  },
+  "backend/src/Security/ApiEntryPoint.php": {
+    "mtime": 1793408231.445264,
+    "seen": 1793488938.0299125,
+    "ast_hash": "b3133c854d133f954b64ae0cedf47803",
+    "semantic_hash": "b3133c854d133f954b64ae0cedf47803"
+  },
+  "backend/src/Security/CsrfRequestSubscriber.php": {
+    "mtime": 1793468779.583922,
+    "seen": 1793488938.0299287,
+    "ast_hash": "a18523fa2c94c60222c6343a4897dac8",
+    "semantic_hash": "a18523fa2c94c60222c6343a4897dac8"
+  },
+  "backend/src/Security/JsonLoginFailureHandler.php": {
+    "mtime": 1793408266.1621284,
+    "seen": 1793488938.029946,
+    "ast_hash": "4c283bcb64956131e0429eee2a68d7ef",
+    "semantic_hash": "4c283bcb64956131e0429eee2a68d7ef"
+  },
+  "backend/src/Security/JsonLoginSuccessHandler.php": {
+    "mtime": 1793408266.1271286,
+    "seen": 1793488938.029963,
+    "ast_hash": "cbb910f0e9e4985351fd6b298778ae8f",
+    "semantic_hash": "cbb910f0e9e4985351fd6b298778ae8f"
+  },
+  "backend/tests/ApiWebTestCase.php": {
+    "mtime": 1793408341.6598332,
+    "seen": 1793488938.02998,
+    "ast_hash": "a2d4ee45109df196ff1ac4dcc312bf84",
+    "semantic_hash": "a2d4ee45109df196ff1ac4dcc312bf84"
+  },
+  "backend/tests/Controller/AdminUserControllerTest.php": {
+    "mtime": 1793463448.8433878,
+    "seen": 1793488938.0299964,
+    "ast_hash": "4c7499b65fdcfb3c90cabe7d855be964",
+    "semantic_hash": "4c7499b65fdcfb3c90cabe7d855be964"
+  },
+  "backend/tests/Controller/AttentionAttachmentFlowTest.php": {
+    "mtime": 1793461761.098157,
+    "seen": 1793488938.0300145,
+    "ast_hash": "d04477ca7b0a3f472528a1e4fbcab3bd",
+    "semantic_hash": "d04477ca7b0a3f472528a1e4fbcab3bd"
+  },
+  "backend/tests/Controller/AttentionFlowTest.php": {
+    "mtime": 1793466524.2162437,
+    "seen": 1793488938.0300314,
+    "ast_hash": "a561bce877bdcfa199c1a6749bb25682",
+    "semantic_hash": "a561bce877bdcfa199c1a6749bb25682"
+  },
+  "backend/tests/Controller/AuthenticatedApiTest.php": {
+    "mtime": 1793408100.732775,
+    "seen": 1793488938.0300474,
+    "ast_hash": "f0c552107217062ba9038ccc9e9f98ec",
+    "semantic_hash": "f0c552107217062ba9038ccc9e9f98ec"
+  },
+  "backend/tests/Controller/ClientPatientFlowTest.php": {
+    "mtime": 1793463566.8532002,
+    "seen": 1793488938.0300636,
+    "ast_hash": "7b74354891148bb41dd7f484b4c79eb0",
+    "semantic_hash": "7b74354891148bb41dd7f484b4c79eb0"
+  },
+  "backend/tests/Controller/LoginFlowTest.php": {
+    "mtime": 1793468783.2861996,
+    "seen": 1793488938.030081,
+    "ast_hash": "9ac8eee4079bb23f90808b73fc22133e",
+    "semantic_hash": "9ac8eee4079bb23f90808b73fc22133e"
+  },
+  "backend/tests/Controller/PatientHistoryPdfTest.php": {
+    "mtime": 1793462237.7022393,
+    "seen": 1793488938.0300977,
+    "ast_hash": "107f827ea8368bfd2826be556ce7cd3b",
+    "semantic_hash": "107f827ea8368bfd2826be556ce7cd3b"
+  },
+  "backend/tests/Controller/SearchPerformanceTest.php": {
+    "mtime": 1793463002.0860984,
+    "seen": 1793488938.0301135,
+    "ast_hash": "f8ce99cfe39f82565a377306ed9ffb27",
+    "semantic_hash": "f8ce99cfe39f82565a377306ed9ffb27"
+  },
+  "backend/tests/Controller/VaccineControllerTest.php": {
+    "mtime": 1793408561.76102,
+    "seen": 1793488938.0301297,
+    "ast_hash": "ccbceef460ea66ddf3f55b29ecd2fde9",
+    "semantic_hash": "ccbceef460ea66ddf3f55b29ecd2fde9"
+  },
+  "backend/tests/Controller/VaccineReminderFlowTest.php": {
+    "mtime": 1793462159.0815866,
+    "seen": 1793488938.0301456,
+    "ast_hash": "bf3bbc170c4ec3e409039f9ee4982225",
+    "semantic_hash": "bf3bbc170c4ec3e409039f9ee4982225"
+  },
+  "backend/tests/bootstrap.php": {
+    "mtime": 1793408196.9902263,
+    "seen": 1793488938.0301616,
+    "ast_hash": "3412362892450359f0a9fadd55270cc8",
+    "semantic_hash": "3412362892450359f0a9fadd55270cc8"
+  },
+  "compose.prod.yaml": {
+    "mtime": 1793463173.0728264,
+    "seen": 1793488938.0301776,
+    "ast_hash": "03f2db52bb5730bc9e5e9089678be868",
+    "semantic_hash": "03f2db52bb5730bc9e5e9089678be868"
+  },
+  "frontend/package.json": {
+    "mtime": 1793459608.3897192,
+    "seen": 1793488938.0301912,
+    "ast_hash": "dd9b6d0b7ec96fd7e430aa7a33088d90",
+    "semantic_hash": "dd9b6d0b7ec96fd7e430aa7a33088d90"
+  },
+  "frontend/src/App.test.tsx": {
+    "mtime": 1793469950.6294515,
+    "seen": 1793488938.0302057,
+    "ast_hash": "8076afae54bd8d53d7c88033106dc862",
+    "semantic_hash": "8076afae54bd8d53d7c88033106dc862"
+  },
+  "frontend/src/App.tsx": {
+    "mtime": 1793470545.3584452,
+    "seen": 1793488938.0302207,
+    "ast_hash": "3871f1fbe33ac19933cb5da54aa2c019",
+    "semantic_hash": "3871f1fbe33ac19933cb5da54aa2c019"
+  },
+  "frontend/src/api.ts": {
+    "mtime": 1793469298.7662203,
+    "seen": 1793488938.0302365,
+    "ast_hash": "159e8890d081b336e01a0d0f87a3c7c8",
+    "semantic_hash": "159e8890d081b336e01a0d0f87a3c7c8"
+  },
+  "frontend/src/features/auth/LoginPage.tsx": {
+    "mtime": 1793470542.6866727,
+    "seen": 1793488938.0302517,
+    "ast_hash": "ed7c43cd486cf865b8ea2d69feb84d56",
+    "semantic_hash": "ed7c43cd486cf865b8ea2d69feb84d56"
+  },
+  "frontend/src/features/clients/ClientDialogs.tsx": {
+    "mtime": 1793475216.5416882,
+    "seen": 1793488938.030271,
+    "ast_hash": "03b5f5fd53803ddda52a2db3a5e65824",
+    "semantic_hash": "03b5f5fd53803ddda52a2db3a5e65824"
+  },
+  "frontend/src/features/clients/ClientViews.tsx": {
+    "mtime": 1793481229.7857478,
+    "seen": 1793488938.030289,
+    "ast_hash": "1327ef405ce87be90947db60204e705c",
+    "semantic_hash": "1327ef405ce87be90947db60204e705c"
+  },
+  "frontend/src/features/clients/ClientsPage.tsx": {
+    "mtime": 1793470723.2330964,
+    "seen": 1793488938.0303068,
+    "ast_hash": "05f6e1a2fdb9c285734ca4692a8c89d2",
+    "semantic_hash": "05f6e1a2fdb9c285734ca4692a8c89d2"
+  },
+  "frontend/src/features/debts/DebtsPage.tsx": {
+    "mtime": 1793471014.0301678,
+    "seen": 1793488938.0303247,
+    "ast_hash": "204abbeb69e496536c3eee15a408ab9f",
+    "semantic_hash": "204abbeb69e496536c3eee15a408ab9f"
+  },
+  "frontend/src/features/reminders/RemindersPage.tsx": {
+    "mtime": 1793470966.3021414,
+    "seen": 1793488938.0303423,
+    "ast_hash": "edc90923c8fe792190347aa3e7cd486c",
+    "semantic_hash": "edc90923c8fe792190347aa3e7cd486c"
+  },
+  "frontend/src/features/settings/SettingsPage.tsx": {
+    "mtime": 1793470773.0898614,
+    "seen": 1793488938.0303602,
+    "ast_hash": "1767ee5cff848c07f8ca8f683ed3641d",
+    "semantic_hash": "1767ee5cff848c07f8ca8f683ed3641d"
+  },
+  "frontend/src/features/users/UsersPage.tsx": {
+    "mtime": 1793471108.2936492,
+    "seen": 1793488938.0303843,
+    "ast_hash": "3cee8f962055b059ab34710b39b7afc7",
+    "semantic_hash": "3cee8f962055b059ab34710b39b7afc7"
+  },
+  "frontend/src/features/vaccines/VaccinesPage.tsx": {
+    "mtime": 1793471108.2929895,
+    "seen": 1793488938.0304039,
+    "ast_hash": "d2dbe6889e2b74e58999a31bcaa92fac",
+    "semantic_hash": "d2dbe6889e2b74e58999a31bcaa92fac"
+  },
+  "frontend/src/layout/AppShell.tsx": {
+    "mtime": 1793470947.6683798,
+    "seen": 1793488938.030423,
+    "ast_hash": "923df07d8f077be92f8071104ecb25cc",
+    "semantic_hash": "923df07d8f077be92f8071104ecb25cc"
+  },
+  "frontend/src/main.tsx": {
+    "mtime": 1793470530.5967114,
+    "seen": 1793488938.0304394,
+    "ast_hash": "5a286867b9ce58d48ac732516fed5eb6",
+    "semantic_hash": "5a286867b9ce58d48ac732516fed5eb6"
+  },
+  "frontend/src/shared/format.ts": {
+    "mtime": 1793459889.192021,
+    "seen": 1793488938.0304546,
+    "ast_hash": "43c0e0c949ebcfa6127139af3326d0ad",
+    "semantic_hash": "43c0e0c949ebcfa6127139af3326d0ad"
+  },
+  "frontend/src/shared/theme.tsx": {
+    "mtime": 1793470527.6763082,
+    "seen": 1793488938.030471,
+    "ast_hash": "4153f49063bfbbf3e291ea01c0afb44e",
+    "semantic_hash": "4153f49063bfbbf3e291ea01c0afb44e"
+  },
+  "frontend/src/shared/types.ts": {
+    "mtime": 1793462008.3312523,
+    "seen": 1793488938.0304873,
+    "ast_hash": "4584cb931e1e60dfcf8f86d0058107d4",
+    "semantic_hash": "4584cb931e1e60dfcf8f86d0058107d4"
+  },
+  "frontend/src/shared/ui.tsx": {
+    "mtime": 1793470797.8117485,
+    "seen": 1793488938.0305035,
+    "ast_hash": "5701bc2153773fc793ee24ebf7391c6a",
+    "semantic_hash": "5701bc2153773fc793ee24ebf7391c6a"
+  },
+  "frontend/src/test-setup.ts": {
+    "mtime": 1793408685.8215954,
+    "seen": 1793488938.03052,
+    "ast_hash": "2c271435e60d9aeb6cd3a5e1e122a5c0",
+    "semantic_hash": "2c271435e60d9aeb6cd3a5e1e122a5c0"
+  },
+  "frontend/src/vite-env.d.ts": {
+    "mtime": 1793412735.5183723,
+    "seen": 1793488938.0305355,
+    "ast_hash": "e7826bc8c58b5cac37d35a106480db6c",
+    "semantic_hash": "e7826bc8c58b5cac37d35a106480db6c"
+  },
+  "frontend/tsconfig.json": {
+    "mtime": 1793408685.7025957,
+    "seen": 1793488938.0305505,
+    "ast_hash": "56d73a3c32542ba517d9c9aed5c2c08d",
+    "semantic_hash": "56d73a3c32542ba517d9c9aed5c2c08d"
+  },
+  "frontend/vite.config.ts": {
+    "mtime": 1793459626.344189,
+    "seen": 1793488938.0305645,
+    "ast_hash": "8b9967993e2f0e5b6fb6625a817db710",
+    "semantic_hash": "8b9967993e2f0e5b6fb6625a817db710"
+  },
+  "scripts/backup-production.sh": {
+    "mtime": 1793463191.7127967,
+    "seen": 1793488938.0305784,
+    "ast_hash": "ed87a8f2f09404c67657f0295392bd6c",
+    "semantic_hash": "ed87a8f2f09404c67657f0295392bd6c"
+  },
+  "scripts/restore-drill.sh": {
+    "mtime": 1793463191.7447968,
+    "seen": 1793488938.0305924,
+    "ast_hash": "911a3397da6f2c35893079afcdb8b892",
+    "semantic_hash": "911a3397da6f2c35893079afcdb8b892"
+  },
+  "scripts/test-backup-restore.sh": {
+    "mtime": 1793463191.7737968,
+    "seen": 1793488938.0306063,
+    "ast_hash": "ce024af89b7e74b6e153637f14f6b658",
+    "semantic_hash": "ce024af89b7e74b6e153637f14f6b658"
+  }
+}

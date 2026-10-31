@@ -1,5 +1,6 @@
 import {
   Activity,
+  Cat,
   ChevronLeft,
   ChevronRight,
   Dog,
@@ -73,7 +74,7 @@ export function ClientListView({
           {(['clients', 'patients'] as const).map((kind) => (
             <button
               aria-selected={searchKind === kind}
-              className={`-mb-px border-b-2 px-0.5 pb-2 text-[13px] transition-colors ${
+              className={`mb-px border-b-2 px-0.5 pb-2 text-[25px] transition-colors${
                 searchKind === kind
                   ? 'border-accent-ink font-medium text-text'
                   : 'border-transparent text-muted hover:text-text'
@@ -117,7 +118,11 @@ export function ClientListView({
                   >
                     <span className="flex min-w-0 items-center gap-3">
                       <span className="grid size-8 flex-none place-items-center rounded-full bg-raised text-muted">
-                        <Dog size={16} strokeWidth={1.7} />
+                        {patient.species === 'dog' ? (
+                          <Dog color='brown' size={20} strokeWidth={1.7} />
+                        ) : (
+                          <Cat color='gray' size={20} strokeWidth={1.7} />
+                        )}
                       </span>
                       <span className="min-w-0">
                         <strong className="block truncate text-sm font-medium text-text">
@@ -296,7 +301,11 @@ export function ClientDetailView({
                   type="button"
                 >
                   <span className="grid size-8 flex-none place-items-center rounded-full bg-raised text-muted">
-                    <Dog size={16} strokeWidth={1.7} />
+                    {patient.species === 'dog' ? (
+                          <Dog color='brown' size={20} strokeWidth={1.7} />
+                        ) : (
+                          <Cat color='gray' size={20} strokeWidth={1.7} />
+                        )}
                   </span>
                   <span className="min-w-0 flex-1">
                     <strong className="block truncate text-sm font-medium text-text">

@@ -330,24 +330,6 @@ export function AttentionDialog({
                         value={app.appliedAt}
                       />
                     </FormField>
-                    <FormField label="N° de lote" optional>
-                      <input
-                        className={inputStyles}
-                        onChange={(event) => updateApp(index, 'batchNumber', event.target.value)}
-                        placeholder="Ej. AB-1234"
-                        type="text"
-                        value={app.batchNumber}
-                      />
-                    </FormField>
-                    <FormField label="Observaciones" optional>
-                      <input
-                        className={inputStyles}
-                        onChange={(event) => updateApp(index, 'observations', event.target.value)}
-                        placeholder="Reacción, próximo refuerzo…"
-                        type="text"
-                        value={app.observations}
-                      />
-                    </FormField>
                   </div>
                 </div>
               ))}
