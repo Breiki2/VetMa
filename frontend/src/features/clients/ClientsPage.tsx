@@ -133,15 +133,18 @@ export function ClientsPage({
       : []
 
     try {
-      await api.saveAttention(selectedPatient.id, {
+      const attention = await api.saveAttention(selectedPatient.id, {
         dateTime,
         types,
         reason: String(data.get('reason')),
         observations: String(data.get('observations')),
+        ultrasoundReport: String(data.get('ultrasoundReport')) || null,
         chargedAmount: String(data.get('chargedAmount') || '0'),
         debtAmount: String(data.get('debtAmount') || '0'),
         vaccineApplications,
       })
+      const files = data.getAll('attachments').filter((item): item is File => item instanceof File && item.size > 0)
+      if (files.length) await api.uploadAttentionFiles(attention.id, files)
       setDialog(null)
       setSelectedClient(await api.client(selectedClient.id))
       setAttentions(await api.attentions(selectedPatient.id))
@@ -168,6 +171,12 @@ export function ClientsPage({
       {selectedClient && selectedPatient ? (
         <PatientDetailView
           attentions={attentions}
+          onDeleteAttachment={(attentionId, attachmentId) => void (async () => {
+            try {
+              await api.deleteAttachment(attentionId, attachmentId)
+              if (selectedPatient) setAttentions(await api.attentions(selectedPatient.id))
+            } catch (cause) { setError(errorMessage(cause)) }
+          })()}
           onBack={() => setSelectedPatient(null)}
           onRecordAttention={() => setDialog('attention')}
           patient={selectedPatient}

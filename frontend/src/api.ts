@@ -5,7 +5,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   const method = (options.method ?? 'GET').toUpperCase()
   const headers = new Headers(options.headers)
 
-  if (options.body) {
+  if (options.body && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json')
   }
 
@@ -84,6 +84,23 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  uploadAttentionFiles: async (attentionId: number, files: FileList | File[]) => {
+    const headers = new Headers()
+    if (!csrfToken) {
+      const response = await fetch(`${base}/api/csrf-token`, { credentials: 'include' })
+      if (!response.ok) throw new Error('No se pudo iniciar una sesión segura.')
+      csrfToken = (await response.json()).csrfToken
+    }
+    headers.set('X-CSRF-Token', csrfToken)
+    const body = new FormData()
+    Array.from(files).forEach((file) => body.append('files[]', file))
+    const response = await fetch(`${base}/api/attentions/${attentionId}/attachments`, { method: 'POST', body, headers, credentials: 'include' })
+    const payload = await response.json()
+    if (!response.ok) throw new Error(payload.error === 'too_many_files' ? 'La atención admite hasta 10 archivos.' : 'No se pudieron adjuntar los archivos.')
+    return payload.items as AttentionAttachment[]
+  },
+  deleteAttachment: (attentionId: number, attachmentId: number) => request<void>(`/api/attentions/${attentionId}/attachments/${attachmentId}`, { method: 'DELETE' }),
+  attachmentUrl: (attentionId: number, attachmentId: number) => `${base}/api/attentions/${attentionId}/attachments/${attachmentId}`,
   users: () => request<AdminUser[]>('/api/admin/users'),
   createUser: (data: { name: string; email: string; role: string; password: string }) =>
     request<AdminUser>('/api/admin/users', {
@@ -156,6 +173,8 @@ export type Attention = {
   types: string[]
   reason?: string
   observations?: string
+  ultrasoundReport?: string | null
+  attachments?: AttentionAttachment[]
   chargedAmount: string
   debtAmount: string
   vaccineApplications?: {
@@ -166,3 +185,5 @@ export type Attention = {
     observations?: string
   }[]
 }
+
+export type AttentionAttachment = { id: number; name: string; mimeType: string; size: number }

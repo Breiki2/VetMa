@@ -109,6 +109,13 @@ export function AttentionDialog({
             ))}
           </div>
         </fieldset>
+        <FormField label="Informe de ecografía" optional>
+          <textarea className={`${inputStyles} min-h-20 py-2`} name="ultrasoundReport" placeholder="Hallazgos e informe…" rows={3} />
+        </FormField>
+        <FormField label="Estudios e informes" optional>
+          <input className={inputStyles} accept="image/jpeg,image/png,application/pdf" multiple name="attachments" type="file" />
+          <span className="mt-1 block text-[10px] text-muted">JPG, PNG o PDF · hasta 10 archivos de 10 MB cada uno · requiere tipo ecografía</span>
+        </FormField>
         <FormField label="Motivo"><input className={inputStyles} name="reason" placeholder="Ej. Control anual" /></FormField>
         <FormField label="Observaciones">
           <textarea className={`${inputStyles} min-h-20 py-2`} name="observations" placeholder="Diagnóstico, tratamiento, indicaciones…" rows={3} />

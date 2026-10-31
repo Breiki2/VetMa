@@ -5,3 +5,11 @@ services:
 
     App\:
         resource: '../src/'
+
+    App\Controller\AttentionAttachmentController:
+        arguments:
+            $attachmentDirectory: '%kernel.project_dir%/var/attachments'
+
+    App\Controller\AttentionController:
+        arguments:
+            $attachmentDirectory: '%kernel.project_dir%/var/attachments'

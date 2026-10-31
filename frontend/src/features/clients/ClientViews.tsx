@@ -10,6 +10,7 @@ import {
   UserRound,
 } from 'lucide-react'
 import type { Attention, Client, ClientAttention, ClientDetails, Patient } from '../../api'
+import { api } from '../../api'
 import { attentionTypeLabel, formatMoney } from '../../shared/format'
 import { Button, EmptyState, PageHeading, Panel, PanelHeading } from '../../shared/ui'
 
@@ -189,11 +190,13 @@ export function PatientDetailView({
   attentions,
   onBack,
   onRecordAttention,
+  onDeleteAttachment,
 }: {
   patient: Patient
   attentions: Attention[]
   onBack: () => void
   onRecordAttention: () => void
+  onDeleteAttachment: (attentionId: number, attachmentId: number) => void
 }) {
   const vaccineCount = attentions.reduce((count, attention) => count + (attention.vaccineApplications?.length || 0), 0)
   const debtTotal = attentions.reduce((sum, attention) => sum + Number(attention.debtAmount), 0)
@@ -215,7 +218,7 @@ export function PatientDetailView({
       <Panel>
         <PanelHeading description="Registro clínico y seguimiento del paciente" title="Historial de atenciones" />
         {attentions.length ? (
-          <AttentionTimeline attentions={attentions} />
+          <AttentionTimeline attentions={attentions} onDeleteAttachment={onDeleteAttachment} />
         ) : (
           <EmptyState
             action="Registrar atención"
@@ -291,7 +294,7 @@ function ClientAttentionHistory({ items }: { items: ClientAttention[] }) {
   )
 }
 
-function AttentionTimeline({ attentions }: { attentions: Attention[] }) {
+function AttentionTimeline({ attentions, onDeleteAttachment }: { attentions: Attention[]; onDeleteAttachment: (attentionId: number, attachmentId: number) => void }) {
   return (
     <div className="px-5 py-1">
       {attentions.map((attention) => (
@@ -309,6 +312,13 @@ function AttentionTimeline({ attentions }: { attentions: Attention[] }) {
             </div>
             {attention.reason && <p className="mt-2 text-[11px] text-slate-500"><strong>Motivo:</strong> {attention.reason}</p>}
             {attention.observations && <p className="mt-2 text-[11px] leading-relaxed text-slate-500">{attention.observations}</p>}
+            {attention.ultrasoundReport && <p className="mt-2 whitespace-pre-wrap text-[11px] leading-relaxed text-slate-600"><strong>Informe de ecografía:</strong> {attention.ultrasoundReport}</p>}
+            {attention.attachments?.map((attachment) => (
+              <div className="mt-2 flex items-center gap-2 text-[11px]" key={attachment.id}>
+                <a className="text-brand-700 underline" href={api.attachmentUrl(attention.id, attachment.id)} rel="noreferrer" target="_blank">{attachment.name} · {Math.ceil(attachment.size / 1024)} KB</a>
+                <button className="text-red-700 underline" onClick={() => onDeleteAttachment(attention.id, attachment.id)} type="button">Eliminar</button>
+              </div>
+            ))}
             {attention.vaccineApplications?.map((application) => (
               <span className="mr-1.5 mt-1 inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-[10px] text-brand-700" key={application.vaccineId}>
                 <Syringe size={14} />{application.vaccineName}

@@ -80,6 +80,13 @@ final class AttentionRegistration
             }
         }
 
+        if (array_key_exists('ultrasoundReport', $data) && !is_string($data['ultrasoundReport']) && $data['ultrasoundReport'] !== null) {
+            $errors['ultrasoundReport'] = 'El informe debe ser texto.';
+        }
+        if (array_key_exists('ultrasoundReport', $data) && !in_array('ecografia', $typeList, true) && trim((string) $data['ultrasoundReport']) !== '') {
+            $errors['ultrasoundReport'] = 'El informe solo corresponde a una ecografía.';
+        }
+
         if ($creating || array_key_exists('dateTime', $data)) {
             try {
                 new \DateTimeImmutable($data['dateTime'] ?? 'now');

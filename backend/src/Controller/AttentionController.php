@@ -18,6 +18,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AttentionController extends AbstractController
 {
+    public function __construct(private readonly string $attachmentDirectory)
+    {
+    }
+
     #[Route('/api/patients/{patientId<\\d+>}/attentions', methods: ['GET'])]
     public function list(int $patientId, PatientRepository $patients, AttentionRepository $attentions): JsonResponse
     {
@@ -58,12 +62,16 @@ final class AttentionController extends AbstractController
         $owner = $this->getUser();
         $attention = $owner instanceof User ? $attentions->findOwnedBy($id, $owner) : null;
         if (!$attention instanceof Attention) return $this->json(['error' => 'not_found'], 404);
+        foreach ($attention->getAttachments() as $attachment) {
+            $path = $this->attachmentDirectory.'/'.$attachment->getStoredName();
+            if (is_file($path)) unlink($path);
+        }
         $entities->remove($attention); $entities->flush();
         return $this->json(null, 204);
     }
 
     private function data(Attention $attention): array
     {
-        return ['id' => $attention->getId(), 'patientId' => $attention->getPatient()->getId(), 'dateTime' => $attention->getDateTime()->format(DATE_ATOM), 'types' => $attention->getTypes(), 'reason' => $attention->getReason(), 'observations' => $attention->getObservations(), 'chargedAmount' => $attention->getChargedAmount(), 'debtAmount' => $attention->getDebtAmount(), 'vaccineApplications' => array_map(static fn (VaccineApplication $a) => ['id' => $a->getId(), 'vaccineId' => $a->getVaccine()->getId(), 'vaccineName' => $a->getVaccine()->getName(), 'appliedAt' => $a->getAppliedAt()->format(DATE_ATOM), 'batchNumber' => $a->getBatchNumber(), 'observations' => $a->getObservations()], $attention->getVaccineApplications()->toArray())];
+        return ['id' => $attention->getId(), 'patientId' => $attention->getPatient()->getId(), 'dateTime' => $attention->getDateTime()->format(DATE_ATOM), 'types' => $attention->getTypes(), 'reason' => $attention->getReason(), 'observations' => $attention->getObservations(), 'ultrasoundReport' => $attention->getUltrasoundReport(), 'attachments' => array_map(static fn ($file) => ['id' => $file->getId(), 'name' => $file->getOriginalName(), 'mimeType' => $file->getMimeType(), 'size' => $file->getSize()], $attention->getAttachments()->toArray()), 'chargedAmount' => $attention->getChargedAmount(), 'debtAmount' => $attention->getDebtAmount(), 'vaccineApplications' => array_map(static fn (VaccineApplication $a) => ['id' => $a->getId(), 'vaccineId' => $a->getVaccine()->getId(), 'vaccineName' => $a->getVaccine()->getName(), 'appliedAt' => $a->getAppliedAt()->format(DATE_ATOM), 'batchNumber' => $a->getBatchNumber(), 'observations' => $a->getObservations()], $attention->getVaccineApplications()->toArray())];
     }
 }

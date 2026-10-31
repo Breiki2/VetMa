@@ -14,6 +14,10 @@ class Attention
     #[ORM\OneToMany(mappedBy: 'attention', targetEntity: VaccineApplication::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $vaccineApplications;
 
+    /** @var Collection<int, AttentionAttachment> */
+    #[ORM\OneToMany(mappedBy: 'attention', targetEntity: AttentionAttachment::class, cascade: ['persist'])]
+    private Collection $attachments;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -35,6 +39,9 @@ class Attention
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $observations = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $ultrasoundReport = null;
+
     #[ORM\Column(type: 'decimal', precision: 12, scale: 2, options: ['default' => '0.00'])]
     private string $chargedAmount = '0.00';
 
@@ -53,6 +60,7 @@ class Attention
         $this->dateTime = $dateTime;
         $this->types = array_values($types);
         $this->vaccineApplications = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = $this->createdAt;
     }
@@ -63,9 +71,11 @@ class Attention
     public function getTypes(): array { return $this->types; }
     public function getReason(): ?string { return $this->reason; }
     public function getObservations(): ?string { return $this->observations; }
+    public function getUltrasoundReport(): ?string { return $this->ultrasoundReport; }
     public function getChargedAmount(): string { return $this->chargedAmount; }
     public function getDebtAmount(): string { return $this->debtAmount; }
     public function getVaccineApplications(): Collection { return $this->vaccineApplications; }
+    public function getAttachments(): Collection { return $this->attachments; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): \DateTimeImmutable { return $this->updatedAt; }
 
@@ -77,7 +87,7 @@ class Attention
         if (array_key_exists('types', $data)) {
             $this->types = array_values($data['types']);
         }
-        foreach (['reason', 'observations', 'chargedAmount', 'debtAmount'] as $field) {
+        foreach (['reason', 'observations', 'ultrasoundReport', 'chargedAmount', 'debtAmount'] as $field) {
             if (array_key_exists($field, $data)) {
                 $value = $data[$field];
                 if (in_array($field, ['chargedAmount', 'debtAmount'], true)) {
@@ -101,5 +111,10 @@ class Attention
     public function clearVaccineApplications(): void
     {
         $this->vaccineApplications->clear();
+    }
+
+    public function addAttachment(AttentionAttachment $attachment): void
+    {
+        $this->attachments->add($attachment);
     }
 }
