@@ -127,8 +127,8 @@ final class AdminUserController extends AbstractController
             }
         }
         if ($creating || array_key_exists('password', $data)) {
-            if (mb_strlen((string) ($data['password'] ?? '')) < 12) {
-                $errors['password'] = 'Usá al menos 12 caracteres.';
+            if (mb_strlen((string) ($data['password'] ?? '')) < 8) {
+                $errors['password'] = 'Usá al menos 8 caracteres.';
             }
         }
         if (array_key_exists('active', $data) && !is_bool($data['active'])) {

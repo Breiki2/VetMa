@@ -31,6 +31,10 @@ final class CsrfRequestSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ($request->getPathInfo() === '/api/login' && $request->isMethod('POST')) {
+            return;
+        }
+
         if (in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS'], true)) {
             return;
         }

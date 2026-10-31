@@ -149,7 +149,7 @@ Relaciones: Usuario 1–N Cliente 1–N Paciente 1–N Atención 1–N Aplicaci�
 
 ### 5.2 Usabilidad
 
-- **RNF-07:** La interfaz debe ser responsiva y usable desde celular y computadora.
+- **RNF-07:** Toda la aplicación web debe ser responsiva y usable en celulares, tablets y computadoras. El diseño debe priorizar el uso móvil (enfoque *mobile-first*), adaptando navegación, formularios, tablas, listados y fichas a pantallas pequeñas sin requerir desplazamiento horizontal para las tareas habituales. Las funciones disponibles deben mantenerse en todos los tamaños de pantalla.
 - **RNF-08:** Registrar una atención común debe poder hacerse en pocos pasos, sin salir de la ficha del paciente.
 
 ### 5.3 Rendimiento y disponibilidad
