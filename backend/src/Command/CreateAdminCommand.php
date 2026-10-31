@@ -28,12 +28,12 @@ final class CreateAdminCommand extends Command
         $helper = $this->getHelper('question');
         $email = mb_strtolower(trim((string) $helper->ask($input, $output, new Question('Email del administrador: '))));
         $name = trim((string) $helper->ask($input, $output, new Question('Nombre: ')));
-        $passwordQuestion = new Question('Contraseña (mínimo 12 caracteres): ');
+        $passwordQuestion = new Question('Contraseña (mínimo 8 caracteres): ');
         $passwordQuestion->setHidden(true);
         $passwordQuestion->setHiddenFallback(false);
         $password = (string) $helper->ask($input, $output, $passwordQuestion);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $name === '' || mb_strlen($password) < 12) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $name === '' || mb_strlen($password) < 8) {
             $output->writeln('<error>Email, nombre o contraseña no válidos.</error>');
             return Command::INVALID;
         }

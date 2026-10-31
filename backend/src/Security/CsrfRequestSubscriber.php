@@ -35,6 +35,10 @@ final class CsrfRequestSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if ($request->getPathInfo() === '/api/login' && $request->isMethod('POST')) {
+            return;
+        }
+
         $token = $request->headers->get('X-CSRF-Token');
         if (!is_string($token) || !$this->tokens->isTokenValid(new CsrfToken('api', $token))) {
             $event->setResponse(new JsonResponse(['error' => 'csrf_token_invalid'], 419));

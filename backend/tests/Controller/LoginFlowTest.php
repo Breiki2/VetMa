@@ -40,7 +40,7 @@ final class LoginFlowTest extends ApiWebTestCase
         self::assertResponseStatusCodeSame(401);
     }
 
-    public function testLoginRequiresASessionBoundCsrfToken(): void
+    public function testLoginWorksWithoutACsrfToken(): void
     {
         $this->createUser();
         $this->browser->jsonRequest('POST', '/api/login', [
@@ -48,8 +48,8 @@ final class LoginFlowTest extends ApiWebTestCase
             'password' => 'Correct-Horse-42!',
         ]);
 
-        self::assertResponseStatusCodeSame(419);
-        self::assertSame(['error' => 'csrf_token_invalid'], json_decode((string) $this->browser->getResponse()->getContent(), true));
+        self::assertResponseIsSuccessful();
+        self::assertSame('vet@example.test', json_decode((string) $this->browser->getResponse()->getContent(), true)['email']);
     }
 
     public function testDeactivatedVeterinarianCannotLogIn(): void

@@ -9,7 +9,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     headers.set('Content-Type', 'application/json')
   }
 
-  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+  const csrfExempt = path === '/api/login'
+  if (!csrfExempt && !['GET', 'HEAD', 'OPTIONS'].includes(method)) {
     if (!csrfToken) {
       const response = await fetch(`${base}/api/csrf-token`, { credentials: 'include' })
       if (!response.ok) throw new Error('No se pudo iniciar una sesión segura.')
@@ -33,7 +34,12 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     return undefined as T
   }
 
-  const payload = await response.json()
+  let payload
+  try {
+    payload = await response.json()
+  } catch {
+    throw new Error(response.ok ? 'La respuesta del servidor no es válida.' : 'No se pudo completar la solicitud. Intentá nuevamente.')
+  }
   if (!response.ok) {
     const message = payload.details
       ? Object.values(payload.details).join(' ')
