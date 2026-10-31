@@ -3,6 +3,7 @@ import { api } from './api'
 import { ClientsPage } from './features/clients/ClientsPage'
 import { DebtsPage } from './features/debts/DebtsPage'
 import { LoginPage } from './features/auth/LoginPage'
+import { RemindersPage } from './features/reminders/RemindersPage'
 import { SettingsPage } from './features/settings/SettingsPage'
 import { UsersPage } from './features/users/UsersPage'
 import { VaccinesPage } from './features/vaccines/VaccinesPage'
@@ -13,6 +14,7 @@ const APP_PREFIX = '/app'
 const sectionPaths: Record<WorkspaceSection, string> = {
   Clientes: `${APP_PREFIX}/clients`,
   Deudas: `${APP_PREFIX}/debts`,
+  Recordatorios: `${APP_PREFIX}/reminders`,
   Vacunas: `${APP_PREFIX}/vaccines`,
   Usuarios: `${APP_PREFIX}/users`,
   'Configuración': `${APP_PREFIX}/settings`,
@@ -135,6 +137,7 @@ export function App() {
         />
       )}
       {section === 'Deudas' && <DebtsPage onOpenClient={openClient} />}
+      {section === 'Recordatorios' && <RemindersPage />}
       {section === 'Vacunas' && <VaccinesPage />}
       {section === 'Usuarios' && user.role === 'admin' && <UsersPage currentUserId={user.id} />}
       {section === 'Configuración' && <SettingsPage user={user} />}

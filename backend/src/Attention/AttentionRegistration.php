@@ -7,6 +7,7 @@ use App\Entity\Patient;
 use App\Entity\Vaccine;
 use App\Entity\VaccineApplication;
 use App\Repository\VaccineRepository;
+use App\Reminder\VaccineReminderScheduler;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class AttentionRegistration
@@ -14,6 +15,7 @@ final class AttentionRegistration
     public function __construct(
         private readonly VaccineRepository $vaccines,
         private readonly EntityManagerInterface $entities,
+        private readonly VaccineReminderScheduler $reminders,
     ) {
     }
 
@@ -38,12 +40,15 @@ final class AttentionRegistration
 
         $this->entities->persist($attention);
         $this->entities->flush();
+        foreach ($attention->getVaccineApplications() as $application) $this->reminders->synchronize($application);
+        $this->entities->flush();
 
         return AttentionRegistrationResult::success($attention);
     }
 
     public function update(Attention $attention, array $data): AttentionRegistrationResult
     {
+        $previousDateTime = $attention->getDateTime();
         $errors = $this->validate($data, creating: false, current: $attention);
         $applications = $this->applications($data, $attention->getPatient(), $errors);
         if ($errors !== []) {
@@ -52,7 +57,14 @@ final class AttentionRegistration
 
         $dateTime = isset($data['dateTime']) ? new \DateTimeImmutable($data['dateTime']) : $attention->getDateTime();
         $attention->update($this->normalized($data, $dateTime));
-        if (array_key_exists('vaccineApplications', $data)) {
+        if (array_key_exists('dateTime', $data) && !array_key_exists('vaccineApplications', $data)) {
+            foreach ($attention->getVaccineApplications() as $application) {
+                if ($application->getAppliedAt()->format('Y-m-d') === $previousDateTime->format('Y-m-d')) {
+                    $application->update(['appliedAt' => $dateTime]);
+                }
+            }
+        }
+        if (array_key_exists('vaccineApplications', $data) || array_key_exists('dateTime', $data)) {
             $attention->clearVaccineApplications();
             foreach ($applications as $application) {
                 $attention->addVaccineApplication($application);
@@ -60,6 +72,10 @@ final class AttentionRegistration
         }
 
         $this->entities->flush();
+        if (array_key_exists('vaccineApplications', $data)) {
+            foreach ($attention->getVaccineApplications() as $application) $this->reminders->synchronize($application);
+            $this->entities->flush();
+        }
 
         return AttentionRegistrationResult::success($attention);
     }

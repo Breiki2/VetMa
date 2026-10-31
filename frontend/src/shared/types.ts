@@ -5,4 +5,4 @@ export type SessionUser = {
   role: string
 }
 
-export type WorkspaceSection = 'Clientes' | 'Deudas' | 'Vacunas' | 'Usuarios' | 'Configuración'
+export type WorkspaceSection = 'Clientes' | 'Deudas' | 'Recordatorios' | 'Vacunas' | 'Usuarios' | 'Configuración'

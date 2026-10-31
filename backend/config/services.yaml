@@ -13,3 +13,7 @@ services:
     App\Controller\AttentionController:
         arguments:
             $attachmentDirectory: '%kernel.project_dir%/var/attachments'
+
+    App\Command\SendVaccineRemindersCommand:
+        arguments:
+            $senderAddress: '%env(MAILER_FROM)%'

@@ -101,6 +101,9 @@ export const api = {
   },
   deleteAttachment: (attentionId: number, attachmentId: number) => request<void>(`/api/attentions/${attentionId}/attachments/${attachmentId}`, { method: 'DELETE' }),
   attachmentUrl: (attentionId: number, attachmentId: number) => `${base}/api/attentions/${attentionId}/attachments/${attachmentId}`,
+  reminders: (status?: string) => request<{ items: VaccineReminder[] }>(`/api/reminders${status ? `?status=${encodeURIComponent(status)}` : ''}`).then((response) => response.items),
+  generateMissingReminders: () => request<{ generated: number }>('/api/reminders/generate-missing', { method: 'POST', body: JSON.stringify({}) }),
+  cancelReminder: (id: number) => request<VaccineReminder>(`/api/reminders/${id}/cancel`, { method: 'POST', body: JSON.stringify({}) }),
   users: () => request<AdminUser[]>('/api/admin/users'),
   createUser: (data: { name: string; email: string; role: string; password: string }) =>
     request<AdminUser>('/api/admin/users', {
@@ -187,3 +190,19 @@ export type Attention = {
 }
 
 export type AttentionAttachment = { id: number; name: string; mimeType: string; size: number }
+
+export type VaccineReminder = {
+  id: number
+  scheduledAt: string
+  status: 'pending' | 'sent' | 'error' | 'cancelled'
+  attempts: number
+  lastError?: string | null
+  sentAt?: string | null
+  clientName: string
+  patientName: string
+  vaccineName: string
+  appliedAt: string
+  clientEmail?: string | null
+  veterinarianName: string
+  veterinarianEmail: string
+}

@@ -1,5 +1,6 @@
 import {
   Bell,
+  CalendarClock,
   ChevronRight,
   CircleDollarSign,
   LogOut,
@@ -14,6 +15,7 @@ import { IconButton } from '../shared/ui'
 const navigation: { section: WorkspaceSection; icon: typeof UserRound }[] = [
   { section: 'Clientes', icon: UserRound },
   { section: 'Deudas', icon: CircleDollarSign },
+  { section: 'Recordatorios', icon: CalendarClock },
   { section: 'Vacunas', icon: Syringe },
   { section: 'Usuarios', icon: UserRound },
   { section: 'Configuración', icon: Settings2 },
