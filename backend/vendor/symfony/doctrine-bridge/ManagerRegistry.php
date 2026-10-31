@@ -1,0 +1,102 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Symfony\Bridge\Doctrine;
+
+use Doctrine\Persistence\AbstractManagerRegistry;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\VarExporter\LazyObjectInterface;
+
+/**
+ * References Doctrine connections and entity/document managers.
+ *
+ * @author Lukas Kahwe Smith <smith@pooteeweet.org>
+ */
+abstract class ManagerRegistry extends AbstractManagerRegistry
+{
+    protected Container $container;
+
+    protected function getService($name): object
+    {
+        return $this->container->get($name);
+    }
+
+    protected function resetService($name): void
+    {
+        if (!$this->container->initialized($name)) {
+            return;
+        }
+        $manager = $this->container->get($name);
+
+        if ($manager instanceof LazyObjectInterface) {
+            if (!$manager->resetLazyObject()) {
+                throw new \LogicException(\sprintf('Resetting a non-lazy manager service is not supported. Declare the "%s" service as lazy.', $name));
+            }
+
+            return;
+        }
+
+        $r = new \ReflectionClass($manager);
+
+        if ($r->isUninitializedLazyObject($manager)) {
+            return;
+        }
+
+        $factory = \Closure::bind(
+            function ($lazyLoad) use ($name) {
+                $id = $this->aliases[$name] ?? $name;
+
+                return match (true) {
+                    isset($this->fileMap[$id]) => $this->load($this->fileMap[$id], $lazyLoad),
+                    !$method = $this->methodMap[$id] ?? null => throw new \LogicException(\sprintf('The "%s" service is synthetic and cannot be reset.', $id)),
+                    (new \ReflectionMethod($this, $method))->isStatic() => $this->{$method}($this, $lazyLoad),
+                    default => $this->{$method}($lazyLoad),
+                };
+            },
+            $this->container,
+            Container::class
+        );
+
+        // The factory of a lazy service returns a new uninitialized lazy object, while the one of a non-lazy service builds it right away
+        $instance = \Closure::bind(
+            function () use ($factory) {
+                [$services, $privates] = [$this->services, $this->privates];
+
+                try {
+                    return $factory(true);
+                } finally {
+                    [$this->services, $this->privates] = [$services, $privates];
+                }
+            },
+            $this->container,
+            Container::class
+        )();
+
+        try {
+            if (!(new \ReflectionClass($instance))->isUninitializedLazyObject($instance)) {
+                // A non-lazy manager cannot be rebuilt in place, so it forwards to the new instance instead
+                $r->resetAsLazyProxy($manager, static fn () => $instance);
+            } elseif ($r->initializeLazyObject($manager) !== $manager) {
+                $r->resetAsLazyProxy($manager, static fn () => $factory(false));
+            } else {
+                $r->resetAsLazyGhost($manager, static function ($manager) use ($factory) {
+                    $factory($manager);
+                });
+            }
+        } catch (\Error $e) {
+            if (__FILE__ !== $e->getFile()) {
+                throw $e;
+            }
+
+            throw new \LogicException(\sprintf('Resetting a non-lazy manager service is not supported. Declare the "%s" service as lazy.', $name), 0, $e);
+        }
+    }
+}
