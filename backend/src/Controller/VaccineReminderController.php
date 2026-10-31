@@ -22,7 +22,10 @@ final class VaccineReminderController extends AbstractController
         if (!$owner instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
         $status = $request->query->get('status');
         if ($status !== null && !in_array($status, [VaccineReminder::PENDING, VaccineReminder::SENT, VaccineReminder::ERROR, VaccineReminder::CANCELLED], true)) return $this->json(['error' => 'invalid_status'], 422);
-        return $this->json(['items' => array_map($this->data(...), $reminders->findForOwner($owner, $status))]);
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(50, max(1, $request->query->getInt('limit', 20)));
+        $result = $reminders->findForOwner($owner, $status, $page, $limit);
+        return $this->json(['items' => array_map($this->data(...), $result['items']), 'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $result['total']]]);
     }
 
     #[Route('/api/reminders/generate-missing', methods: ['POST'])]

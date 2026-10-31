@@ -56,12 +56,12 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   logout: () => request('/api/logout', { method: 'POST' }),
-  clients: (query = '') =>
-    request<{ items: Client[]; pagination: { total: number } }>(
-      `/api/clients?q=${encodeURIComponent(query)}`,
+  clients: (query = '', page = 1) =>
+    request<{ items: Client[]; pagination: { total: number; page: number; limit: number } }>(
+      `/api/clients?q=${encodeURIComponent(query)}&page=${page}`,
     ),
-  debts: () => request<Client[]>('/api/clients/debts'),
-  client: (id: number) => request<ClientDetails>(`/api/clients/${id}`),
+  debts: (page = 1) => request<{ items: Client[]; pagination: { total: number; page: number; limit: number } }>(`/api/clients/debts?page=${page}`),
+  client: (id: number, page = 1) => request<ClientDetails>(`/api/clients/${id}?page=${page}`),
   saveClient: (data: Partial<Client>, id?: number) =>
     request<Client>(`/api/clients${id ? `/${id}` : ''}`, {
       method: id ? 'PATCH' : 'POST',
@@ -102,7 +102,8 @@ export const api = {
   deleteAttachment: (attentionId: number, attachmentId: number) => request<void>(`/api/attentions/${attentionId}/attachments/${attachmentId}`, { method: 'DELETE' }),
   attachmentUrl: (attentionId: number, attachmentId: number) => `${base}/api/attentions/${attentionId}/attachments/${attachmentId}`,
   patientHistoryPdfUrl: (patientId: number) => `${base}/api/patients/${patientId}/history.pdf`,
-  reminders: (status?: string) => request<{ items: VaccineReminder[] }>(`/api/reminders${status ? `?status=${encodeURIComponent(status)}` : ''}`).then((response) => response.items),
+  reminders: (status?: string, page = 1) => request<{ items: VaccineReminder[]; pagination: { total: number; page: number; limit: number } }>(`/api/reminders?${status ? `status=${encodeURIComponent(status)}&` : ''}page=${page}`),
+  searchPatients: (query: string, page = 1) => request<{ items: (Patient & { clientId: number; clientName: string })[]; pagination: { total: number } }>(`/api/patients?q=${encodeURIComponent(query)}&page=${page}`),
   generateMissingReminders: () => request<{ generated: number }>('/api/reminders/generate-missing', { method: 'POST', body: JSON.stringify({}) }),
   cancelReminder: (id: number) => request<VaccineReminder>(`/api/reminders/${id}/cancel`, { method: 'POST', body: JSON.stringify({}) }),
   users: () => request<AdminUser[]>('/api/admin/users'),
@@ -137,6 +138,7 @@ export type Client = {
 
 export type ClientDetails = Client & {
   patients: Patient[]
+  patientsPagination: { page: number; limit: number; total: number }
   debtTotal: string
   attentions: ClientAttention[]
 }

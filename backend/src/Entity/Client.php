@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\Index(name: 'idx_client_owner_name', columns: ['owner_id', 'surname', 'name'])]
+#[ORM\Index(name: 'idx_client_owner_phone', columns: ['owner_id', 'phone'])]
+#[ORM\Index(name: 'idx_client_owner_email', columns: ['owner_id', 'email'])]
 class Client
 {
     /** @var Collection<int, Patient> */

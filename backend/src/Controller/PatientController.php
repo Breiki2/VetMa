@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PatientController extends AbstractController
 {
     #[Route('/api/clients/{clientId<\\d+>}/patients', name: 'api_patients_list', methods: ['GET'])]
-    public function listForClient(int $clientId, ClientRepository $clients, PatientRepository $patients): JsonResponse
+    public function listForClient(int $clientId, Request $request, ClientRepository $clients, PatientRepository $patients): JsonResponse
     {
         $owner = $this->currentVeterinarian();
         $client = $owner instanceof User ? $clients->findOwnedBy($clientId, $owner) : null;
@@ -27,7 +27,21 @@ final class PatientController extends AbstractController
             return $this->json(['error' => 'not_found'], 404);
         }
 
-        return $this->json(['items' => array_map($this->patientData(...), $patients->findForClient($client))]);
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(50, max(1, $request->query->getInt('limit', 20)));
+        $result = $patients->pageForClient($client, $page, $limit);
+        return $this->json(['items' => array_map($this->patientData(...), $result['items']), 'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $result['total']]]);
+    }
+
+    #[Route('/api/patients', name: 'api_patients_search', methods: ['GET'])]
+    public function search(Request $request, PatientRepository $patients): JsonResponse
+    {
+        $owner = $this->currentVeterinarian();
+        if (!$owner instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(50, max(1, $request->query->getInt('limit', 20)));
+        $result = $patients->searchOwnedBy($owner, trim($request->query->getString('q')), $page, $limit);
+        return $this->json(['items' => array_map(fn (Patient $patient) => $this->patientData($patient) + ['clientId' => $patient->getClient()->getId(), 'clientName' => $patient->getClient()->getName().' '.$patient->getClient()->getSurname()], $result['items']), 'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $result['total']]]);
     }
 
     #[Route('/api/clients/{clientId<\\d+>}/patients', name: 'api_patients_create', methods: ['POST'])]

@@ -46,18 +46,19 @@ describe('VetMa workspace', () => {
       if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
       if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
       if (url.endsWith('/api/login')) return Response.json(sessionUser('veterinarian'))
-      if (url.endsWith('/api/clients?q=')) {
-        return Response.json({ items: clientExists ? [{ ...client, debtTotal: '0.00' }] : [], pagination: { total: Number(clientExists) } })
+      if (url.includes('/api/clients?q=')) {
+        return Response.json({ items: clientExists ? [{ ...client, debtTotal: '0.00' }] : [], pagination: { total: Number(clientExists), page: 1, limit: 20 } })
       }
       if (url.endsWith('/api/clients') && method === 'POST') {
         clientExists = true
         return Response.json(client, { status: 201 })
       }
-      if (url.endsWith('/api/clients/7') && method === 'GET') {
+      if (url.includes('/api/clients/7?page=') && method === 'GET') {
         return Response.json({
           ...client,
           debtTotal: '0.00',
           patients: patientExists ? [patient] : [],
+          patientsPagination: { total: Number(patientExists), page: 1, limit: 20 },
           attentions: [],
         })
       }
@@ -117,13 +118,13 @@ describe('VetMa workspace', () => {
       if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
       if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
       if (url.endsWith('/api/login')) return Response.json(user)
-      if (url.endsWith('/api/clients?q=')) return Response.json({ items: [], pagination: { total: 0 } })
+      if (url.includes('/api/clients?q=')) return Response.json({ items: [], pagination: { total: 0, page: 1, limit: 20 } })
       if (url.endsWith('/api/admin/users') && method === 'GET') return Response.json(createdUser ? [user] : [])
       if (url.endsWith('/api/admin/users') && method === 'POST') {
         createdUser = true
         return Response.json(user, { status: 201 })
       }
-      if (url.endsWith('/api/clients/debts')) return Response.json([])
+      if (url.includes('/api/clients/debts')) return Response.json({ items: [], pagination: { total: 0, page: 1, limit: 20 } })
       if (url.endsWith('/api/vaccines?species=')) return Response.json([])
 
       throw new Error(`Unexpected request ${method} ${url}`)
@@ -170,7 +171,7 @@ function mockFetch({ role }: { role: 'admin' | 'veterinarian' }) {
     if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
     if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
     if (url.endsWith('/api/login')) return Response.json(sessionUser(role))
-    if (url.includes('/api/clients')) return Response.json({ items: [], pagination: { total: 0 } })
+    if (url.includes('/api/clients')) return Response.json({ items: [], pagination: { total: 0, page: 1, limit: 20 } })
     throw new Error(`Unexpected request ${url}`)
   })
 }

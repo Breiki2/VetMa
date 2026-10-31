@@ -28,7 +28,7 @@ final class ClientRepository extends ServiceEntityRepository
             $query->andWhere('client.archived = false');
         }
         if ($term !== '') {
-            $query->andWhere('LOWER(client.name) LIKE :term OR LOWER(client.surname) LIKE :term OR LOWER(client.phone) LIKE :term OR LOWER(client.email) LIKE :term')
+            $query->andWhere($query->expr()->orX('LOWER(client.name) LIKE :term', 'LOWER(client.surname) LIKE :term', 'LOWER(client.phone) LIKE :term', 'LOWER(client.email) LIKE :term'))
                 ->setParameter('term', '%'.mb_strtolower($term).'%');
         }
 

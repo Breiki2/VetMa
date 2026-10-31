@@ -36,8 +36,9 @@ final class ClientController extends AbstractController
             $limit,
         );
 
+        $debts = $attentions->debtTotalsForClients($result['items']);
         return $this->json([
-            'items' => array_map(fn (Client $client) => $this->clientData($client, $attentions), $result['items']),
+            'items' => array_map(fn (Client $client) => $this->clientData($client, $attentions, $debts[$client->getId()] ?? '0.00'), $result['items']),
             'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $result['total']],
         ]);
     }
@@ -65,7 +66,7 @@ final class ClientController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}', name: 'api_clients_show', methods: ['GET'])]
-    public function show(int $id, ClientRepository $clients, PatientRepository $patients, AttentionRepository $attentions): JsonResponse
+    public function show(int $id, Request $request, ClientRepository $clients, PatientRepository $patients, AttentionRepository $attentions): JsonResponse
     {
         $owner = $this->currentVeterinarian();
         $client = $owner instanceof User ? $clients->findOwnedBy($id, $owner) : null;
@@ -74,7 +75,11 @@ final class ClientController extends AbstractController
         }
 
         $data = $this->clientData($client, $attentions);
-        $data['patients'] = array_map($this->patientData(...), $patients->findForClient($client));
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(50, max(1, $request->query->getInt('limit', 20)));
+        $patientPage = $patients->pageForClient($client, $page, $limit);
+        $data['patients'] = array_map($this->patientData(...), $patientPage['items']);
+        $data['patientsPagination'] = ['page' => $page, 'limit' => $limit, 'total' => $patientPage['total']];
         $data['attentions'] = array_map(static fn (\App\Entity\Attention $attention) => [
             'id' => $attention->getId(),
             'patientId' => $attention->getPatient()->getId(),
@@ -153,14 +158,17 @@ final class ClientController extends AbstractController
     }
 
     #[Route('/debts', name: 'api_clients_debts', methods: ['GET'])]
-    public function debts(AttentionRepository $attentions): JsonResponse
+    public function debts(Request $request, AttentionRepository $attentions): JsonResponse
     {
         $owner = $this->currentVeterinarian();
         if (!$owner instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
-        return $this->json(array_map(fn (array $row) => $this->clientData($row[0], $attentions), $attentions->clientsWithDebt($owner)));
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = min(50, max(1, $request->query->getInt('limit', 20)));
+        $result = $attentions->clientsWithDebt($owner, $page, $limit);
+        return $this->json(['items' => array_map(fn (array $row) => $this->clientData($row[0], $attentions, $attentions->decimalString((string) $row['debt'])), $result['items']), 'pagination' => ['page' => $page, 'limit' => $limit, 'total' => $result['total']]]);
     }
 
-    private function clientData(Client $client, AttentionRepository $attentions): array
+    private function clientData(Client $client, AttentionRepository $attentions, ?string $debtTotal = null): array
     {
         return [
             'id' => $client->getId(),
@@ -173,7 +181,7 @@ final class ClientController extends AbstractController
             'address' => $client->getAddress(),
             'notes' => $client->getNotes(),
             'archived' => $client->isArchived(),
-            'debtTotal' => $attentions->debtForClient($client),
+            'debtTotal' => $debtTotal ?? $attentions->debtForClient($client),
             'createdAt' => $client->getCreatedAt()->format(DATE_ATOM),
             'updatedAt' => $client->getUpdatedAt()->format(DATE_ATOM),
         ];

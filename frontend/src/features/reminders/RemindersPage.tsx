@@ -14,11 +14,18 @@ const views = [
 export function RemindersPage() {
   const [status, setStatus] = useState('pending')
   const [items, setItems] = useState<VaccineReminder[]>([])
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
 
-  async function load() {
-    try { setItems(await api.reminders(status)) } catch (cause) { setError(errorMessage(cause)) }
+  async function load(nextPage = 1, append = false) {
+    try {
+      const result = await api.reminders(status, nextPage)
+      setItems((current) => append ? [...current, ...result.items] : result.items)
+      setPage(nextPage)
+      setTotal(result.pagination.total)
+    } catch (cause) { setError(errorMessage(cause)) }
   }
 
   useEffect(() => { void load() }, [status])
@@ -53,6 +60,7 @@ export function RemindersPage() {
             {item.status === 'pending' && <Button onClick={() => void cancel(item.id)}>Cancelar</Button>}
           </article>)}
         </div> : <EmptyState description={status === 'pending' ? 'Las próximas dosis aparecerán cuando registres vacunas aplicadas.' : 'No hay recordatorios en este estado.'} icon={CalendarClock} title="No hay recordatorios" />}
+        {items.length < total && <div className="border-t border-slate-100 p-3 text-center"><button className="text-xs font-semibold text-brand-700" onClick={() => void load(page + 1, true)} type="button">Cargar más recordatorios</button></div>}
       </Panel>
     </>
   )

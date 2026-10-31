@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AttentionRepository::class)]
+#[ORM\Index(name: 'idx_attention_patient_datetime', columns: ['patient_id', 'dateTime'])]
 class Attention
 {
     /** @var Collection<int, VaccineApplication> */

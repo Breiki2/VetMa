@@ -8,6 +8,7 @@ use App\Entity\Patient;
 use App\Entity\VaccineReminder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 final class VaccineReminderRepository extends ServiceEntityRepository
 {
@@ -23,12 +24,13 @@ final class VaccineReminderRepository extends ServiceEntityRepository
     }
 
     /** @return list<VaccineReminder> */
-    public function findForOwner(User $owner, ?string $status = null): array
+    public function findForOwner(User $owner, ?string $status = null, int $page = 1, int $limit = 20): array
     {
         $query = $this->createQueryBuilder('reminder')->join('reminder.application', 'application')->join('application.attention', 'attention')->join('attention.patient', 'patient')->join('patient.client', 'client')
             ->andWhere('client.owner = :owner')->setParameter('owner', $owner);
         if ($status !== null) $query->andWhere('reminder.status = :status')->setParameter('status', $status);
-        return $query->orderBy('reminder.scheduledAt', 'ASC')->setMaxResults(200)->getQuery()->getResult();
+        $paginator = new Paginator($query->orderBy('reminder.scheduledAt', 'ASC')->setFirstResult(($page - 1) * $limit)->setMaxResults($limit)->getQuery());
+        return ['items' => iterator_to_array($paginator->getIterator()), 'total' => count($paginator)];
     }
 
     public function findOwnedBy(int $id, User $owner): ?VaccineReminder

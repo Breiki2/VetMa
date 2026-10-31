@@ -20,12 +20,26 @@ export function ClientListView({
   onQueryChange,
   onSelect,
   onAdd,
+  total,
+  hasMore,
+  onLoadMore,
+  searchKind,
+  onSearchKindChange,
+  patientResults,
+  onSelectPatientResult,
 }: {
   clients: Client[]
   query: string
   onQueryChange: (query: string) => void
   onSelect: (id: number) => void
   onAdd: () => void
+  total: number
+  hasMore: boolean
+  onLoadMore: () => void
+  searchKind: 'clients' | 'patients'
+  onSearchKindChange: (kind: 'clients' | 'patients') => void
+  patientResults: (Patient & { clientId: number; clientName: string })[]
+  onSelectPatientResult: (clientId: number, patientId: number) => void
 }) {
   return (
     <>
@@ -36,19 +50,26 @@ export function ClientListView({
         title="Clientes"
       />
       <div className="mb-4 flex items-center gap-4">
+        <div className="flex gap-3 text-xs" role="tablist" aria-label="Buscar en">
+          {(['clients', 'patients'] as const).map((kind) => <button aria-selected={searchKind === kind} className={`border-b-2 pb-2 ${searchKind === kind ? 'border-brand-700 font-semibold text-slate-800' : 'border-transparent text-slate-500'}`} key={kind} onClick={() => onSearchKindChange(kind)} role="tab" type="button">{kind === 'clients' ? 'Clientes' : 'Pacientes'}</button>)}
+        </div>
         <label className="flex h-[41px] w-full max-w-[440px] flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-400">
           <Search size={18} />
           <input
             className="w-full text-xs text-slate-700 outline-none placeholder:text-slate-400"
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Buscar por nombre, teléfono o email…"
+            placeholder={searchKind === 'clients' ? 'Buscar por nombre, teléfono o email…' : 'Buscar pacientes por nombre o cliente…'}
             value={query}
           />
           <kbd className="whitespace-nowrap rounded border border-slate-200 px-1.5 py-0.5 text-[10px]">⌘ K</kbd>
         </label>
-        <span className="text-[11px] text-muted">{clients.length} clientes</span>
+        <span className="text-[11px] text-muted">{total} {searchKind === 'clients' ? 'clientes' : 'pacientes'}</span>
       </div>
       <Panel className="overflow-hidden">
+        {searchKind === 'patients' ? <div className="divide-y divide-slate-100">
+          {patientResults.map((patient) => <button className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-slate-50" key={patient.id} onClick={() => onSelectPatientResult(patient.clientId, patient.id)} type="button"><span><strong className="block text-xs text-slate-700">{patient.name}</strong><span className="mt-1 block text-[10px] text-slate-500">{patient.species === 'dog' ? 'Perro' : 'Gato'} · {patient.clientName}</span></span><ChevronRight className="text-slate-400" size={17} /></button>)}
+          {patientResults.length === 0 && <EmptyState description="Probá con otro nombre de paciente o cliente." icon={Dog} title="No encontramos pacientes" />}
+        </div> : <div className="overflow-auto">
         <div className="overflow-auto">
           <table className="w-full min-w-[620px] border-collapse text-left">
             <thead className="bg-slate-50 text-[9px] font-bold tracking-widest text-slate-500">
@@ -98,6 +119,8 @@ export function ClientListView({
             title={query ? 'No encontramos clientes' : 'Tu lista de clientes está vacía'}
           />
         )}
+        </div>}
+        {hasMore && <div className="border-t border-slate-100 p-3 text-center"><Button onClick={onLoadMore}>Cargar más {searchKind === 'clients' ? 'clientes' : 'pacientes'}</Button></div>}
       </Panel>
     </>
   )
@@ -109,12 +132,14 @@ export function ClientDetailView({
   onAddPatient,
   onSelectPatient,
   onToggleRemindersOptOut,
+  onLoadMorePatients,
 }: {
   client: ClientDetails
   onBack: () => void
   onAddPatient: () => void
   onSelectPatient: (patient: Patient) => void
   onToggleRemindersOptOut: () => void
+  onLoadMorePatients: () => void
 }) {
   return (
     <>
@@ -127,7 +152,7 @@ export function ClientDetailView({
         title={`${client.name} ${client.surname}`}
       />
       <div className="mb-[18px] grid grid-cols-3 gap-3 max-[650px]:gap-2">
-        <StatCard label="Pacientes" value={String(client.patients.length)} />
+        <StatCard label="Pacientes" value={String(client.patientsPagination.total)} />
         <StatCard label="Deuda pendiente" value={formatMoney(Number(client.debtTotal || 0))} />
         <div className="min-h-[85px] rounded-xl border border-line bg-white px-4 py-3.5 shadow-sm max-[650px]:px-2">
           <span className="block text-[10px] text-muted">Email</span>
@@ -173,6 +198,7 @@ export function ClientDetailView({
             title="Agregá el primer paciente"
           />
         )}
+        {client.patients.length < client.patientsPagination.total && <div className="border-t border-slate-100 p-3 text-center"><Button onClick={onLoadMorePatients}>Cargar más pacientes</Button></div>}
       </Panel>
 
       <Panel className="p-[17px_18px]">

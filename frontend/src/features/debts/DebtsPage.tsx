@@ -6,10 +6,12 @@ import { EmptyState, PageHeading, Panel, Toast } from '../../shared/ui'
 
 export function DebtsPage({ onOpenClient }: { onOpenClient: (id: number) => void }) {
   const [clients, setClients] = useState<Client[]>([])
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.debts().then(setClients).catch((cause) => setError(errorMessage(cause)))
+    api.debts().then((result) => { setClients(result.items); setTotal(result.pagination.total) }).catch((cause) => setError(errorMessage(cause)))
   }, [])
 
   return (
@@ -52,6 +54,10 @@ export function DebtsPage({ onOpenClient }: { onOpenClient: (id: number) => void
         {clients.length === 0 && (
           <EmptyState description="Las deudas ingresadas en cada atención aparecerán acá." icon={CircleDollarSign} title="No hay saldos pendientes" />
         )}
+        {clients.length < total && <div className="border-t border-slate-100 p-3 text-center"><button className="text-xs font-semibold text-brand-700" onClick={() => {
+          const nextPage = page + 1
+          api.debts(nextPage).then((result) => { setClients((current) => [...current, ...result.items]); setPage(nextPage); setTotal(result.pagination.total) }).catch((cause) => setError(errorMessage(cause)))
+        }} type="button">Cargar más clientes</button></div>}
       </Panel>
     </>
   )

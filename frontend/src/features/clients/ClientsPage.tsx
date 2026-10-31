@@ -26,7 +26,11 @@ export function ClientsPage({
   onClientCountChange: (count: number) => void
 }) {
   const [query, setQuery] = useState('')
+  const [searchKind, setSearchKind] = useState<'clients' | 'patients'>('clients')
   const [clients, setClients] = useState<Client[]>([])
+  const [patientResults, setPatientResults] = useState<(Patient & { clientId: number; clientName: string })[]>([])
+  const [clientTotal, setClientTotal] = useState(0)
+  const [clientPage, setClientPage] = useState(1)
   const [selectedClient, setSelectedClient] = useState<ClientDetails | null>(null)
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null)
   const [attentions, setAttentions] = useState<Attention[]>([])
@@ -36,15 +40,19 @@ export function ClientsPage({
 
   useEffect(() => {
     let active = true
-    api.clients(query)
+    const load = searchKind === 'clients' ? api.clients(query, 1) : api.searchPatients(query, 1)
+    load
       .then((result) => {
         if (!active) return
-        setClients(result.items)
-        onClientCountChange(result.items.length)
+        if (searchKind === 'clients') setClients(result.items as Client[])
+        else setPatientResults(result.items as (Patient & { clientId: number; clientName: string })[])
+        setClientTotal(result.pagination.total)
+        setClientPage(1)
+        if (searchKind === 'clients') onClientCountChange(result.pagination.total)
       })
       .catch((cause) => active && setError(errorMessage(cause)))
     return () => { active = false }
-  }, [query, onClientCountChange])
+  }, [query, searchKind, onClientCountChange])
 
   useEffect(() => {
     if (initialClientId === null) return
@@ -72,12 +80,21 @@ export function ClientsPage({
 
   async function openClient(id: number) {
     try {
-      setSelectedClient(await api.client(id))
+      setSelectedClient(await api.client(id, 1))
       setSelectedPatient(null)
       setAttentions([])
     } catch (cause) {
       setError(errorMessage(cause))
     }
+  }
+
+  async function loadMorePatients() {
+    if (!selectedClient) return
+    try {
+      const nextPage = selectedClient.patientsPagination.page + 1
+      const next = await api.client(selectedClient.id, nextPage)
+      setSelectedClient({ ...selectedClient, patients: [...selectedClient.patients, ...next.patients], patientsPagination: next.patientsPagination })
+    } catch (cause) { setError(errorMessage(cause)) }
   }
 
   async function openPatient(patient: Patient) {
@@ -172,12 +189,38 @@ export function ClientsPage({
 
   async function refreshClients() {
     try {
-      const result = await api.clients(query)
+      const result = await api.clients(query, 1)
       setClients(result.items)
-      onClientCountChange(result.items.length)
+      setClientTotal(result.pagination.total)
+      setClientPage(1)
+      onClientCountChange(result.pagination.total)
     } catch (cause) {
       setError(errorMessage(cause))
     }
+  }
+
+  async function loadMoreClients() {
+    try {
+      const nextPage = clientPage + 1
+      if (searchKind === 'clients') {
+        const result = await api.clients(query, nextPage)
+        setClients((current) => [...current, ...result.items])
+      } else {
+        const result = await api.searchPatients(query, nextPage)
+        setPatientResults((current) => [...current, ...result.items])
+      }
+      setClientPage(nextPage)
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
+  async function openPatientSearchResult(clientId: number, patientId: number) {
+    try {
+      const client = await api.client(clientId)
+      const patient = client.patients.find((item) => item.id === patientId)
+      if (!patient) return
+      setSelectedClient(client)
+      await openPatient(patient)
+    } catch (cause) { setError(errorMessage(cause)) }
   }
 
   const closeDialog = () => setDialog(null)
@@ -209,10 +252,18 @@ export function ClientsPage({
           }}
           onSelectPatient={(patient) => void openPatient(patient)}
           onToggleRemindersOptOut={() => void toggleRemindersOptOut()}
+          onLoadMorePatients={() => void loadMorePatients()}
         />
       ) : (
         <ClientListView
           clients={clients}
+          total={clientTotal}
+          hasMore={clients.length < clientTotal}
+          onLoadMore={() => void loadMoreClients()}
+          searchKind={searchKind}
+          onSearchKindChange={setSearchKind}
+          patientResults={patientResults}
+          onSelectPatientResult={(clientId, patientId) => void openPatientSearchResult(clientId, patientId)}
           onAdd={() => setDialog('client')}
           onQueryChange={setQuery}
           onSelect={(id) => void openClient(id)}

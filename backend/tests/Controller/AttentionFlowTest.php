@@ -39,7 +39,9 @@ final class AttentionFlowTest extends ApiWebTestCase
         $this->browser->request('GET', '/api/patients/'.$patient->getId());
         self::assertSame('Triple felina', json_decode((string) $this->browser->getResponse()->getContent(), true)['vaccines'][0]['name']);
         $this->browser->request('GET', '/api/clients/debts');
-        self::assertCount(1, json_decode((string) $this->browser->getResponse()->getContent(), true));
+        $debts = json_decode((string) $this->browser->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        self::assertCount(1, $debts['items']);
+        self::assertSame(1, $debts['pagination']['total']);
     }
 
     public function testVaccineAttentionRequiresValidApplicableVaccineAndRejectsNegativeAmounts(): void
