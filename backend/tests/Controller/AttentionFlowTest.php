@@ -65,4 +65,82 @@ final class AttentionFlowTest extends ApiWebTestCase
         $this->browser->jsonRequest('PATCH', '/api/attentions/'.$attention->getId(), ['types' => ['vacuna']], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
         self::assertResponseStatusCodeSame(422);
     }
+
+    public function testOwnerCanUpdateAttentionAmountsToReflectSubsequentPaymentAndDeleteWithIsolation(): void
+    {
+        $vet = $this->createUser();
+        $otherVet = $this->createUser('other@example.test');
+        $client = new Client($vet, 'Ana', 'Pérez', '112233');
+        $client->update(['email' => 'ana@example.test']);
+        $patient = new Patient($client, 'Mora', 'cat', 'female', true);
+        $patient->update(['approximateAge' => '4 años']);
+        $vaccine = new Vaccine('Triple felina', 'cat');
+        foreach ([$client, $patient, $vaccine] as $entity) $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        $this->logIn();
+        $this->browser->jsonRequest('POST', '/api/patients/'.$patient->getId().'/attentions', [
+            'dateTime' => '2026-10-30T10:00:00-03:00',
+            'types' => ['vacuna', 'atencion'],
+            'reason' => 'Consulta y vacuna',
+            'chargedAmount' => '10000.00',
+            'debtAmount' => '5000.00',
+            'vaccineApplications' => [['vaccineId' => $vaccine->getId()]],
+        ], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(201);
+        $created = json_decode((string) $this->browser->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        $attentionId = $created['id'];
+
+        $this->browser->request('GET', '/api/clients/'.$client->getId());
+        $clientData = json_decode((string) $this->browser->getResponse()->getContent(), true);
+        self::assertSame('5000.00', $clientData['debtTotal']);
+
+        $this->browser->request('GET', '/api/reminders?status=pending');
+        $reminders = json_decode((string) $this->browser->getResponse()->getContent(), true)['items'];
+        self::assertCount(1, $reminders);
+
+        // Update amounts to reflect subsequent payment
+        $this->browser->jsonRequest('PATCH', '/api/attentions/'.$attentionId, [
+            'chargedAmount' => '15000.00',
+            'debtAmount' => '0.00',
+        ], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseIsSuccessful();
+        $updated = json_decode((string) $this->browser->getResponse()->getContent(), true);
+        self::assertSame('15000.00', $updated['chargedAmount']);
+        self::assertSame('0.00', $updated['debtAmount']);
+
+        $this->browser->request('GET', '/api/clients/'.$client->getId());
+        $clientDataAfterPayment = json_decode((string) $this->browser->getResponse()->getContent(), true);
+        self::assertSame('0.00', $clientDataAfterPayment['debtTotal']);
+
+        // Isolation: other veterinarian cannot PATCH or DELETE this attention
+        $this->browser->request('POST', '/api/logout', server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/csrf-token');
+        $this->browser->jsonRequest('POST', '/api/login', [
+            'email' => 'other@example.test',
+            'password' => 'Correct-Horse-42!',
+        ], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+
+        $this->browser->jsonRequest('PATCH', '/api/attentions/'.$attentionId, [
+            'chargedAmount' => '20000.00',
+        ], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+
+        $this->browser->request('DELETE', '/api/attentions/'.$attentionId, server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+
+        // Delete by owner cancels reminders and removes attention
+        $this->browser->request('POST', '/api/logout', server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/csrf-token');
+        $this->logIn();
+
+        $this->browser->request('DELETE', '/api/attentions/'.$attentionId, server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(204);
+
+        $this->browser->request('GET', '/api/patients/'.$patient->getId().'/attentions');
+        self::assertSame([], json_decode((string) $this->browser->getResponse()->getContent(), true));
+
+        $this->browser->request('GET', '/api/reminders?status=pending');
+        self::assertSame([], json_decode((string) $this->browser->getResponse()->getContent(), true)['items']);
+    }
 }

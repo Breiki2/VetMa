@@ -74,6 +74,15 @@ describe('VetMa workspace', () => {
         recordedAttention = true
         return Response.json(attention, { status: 201 })
       }
+      if (url.endsWith('/api/attentions/9') && method === 'PATCH') {
+        attention.chargedAmount = '20000.00'
+        attention.debtAmount = '0.00'
+        return Response.json(attention)
+      }
+      if (url.endsWith('/api/attentions/9') && method === 'DELETE') {
+        recordedAttention = false
+        return new Response(null, { status: 204 })
+      }
 
       throw new Error(`Unexpected request ${method} ${url}`)
     })
@@ -106,6 +115,25 @@ describe('VetMa workspace', () => {
       expect.stringContaining('/api/patients/8/attentions'),
       expect.objectContaining({ method: 'POST' }),
     )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Editar' }))
+    fireEvent.change(screen.getByLabelText('Monto cobrado'), { target: { value: '20000.00' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/api/attentions/9'),
+        expect.objectContaining({ method: 'PATCH' }),
+      )
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/api/attentions/9'),
+        expect.objectContaining({ method: 'DELETE' }),
+      )
+    })
   })
 
   it('lets an administrator create an account and navigate between workspace sections', async () => {

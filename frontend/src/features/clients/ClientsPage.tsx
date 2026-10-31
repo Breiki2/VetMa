@@ -38,6 +38,7 @@ export function ClientsPage({
   const [dialog, setDialog] = useState<Dialog>(null)
   const [editingClient, setEditingClient] = useState<Client | null>(null)
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
+  const [editingAttention, setEditingAttention] = useState<Attention | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -163,7 +164,7 @@ export function ClientsPage({
       : []
 
     try {
-      const attention = await api.saveAttention(selectedPatient.id, {
+      const attentionPayload = {
         dateTime,
         types,
         reason: String(data.get('reason')),
@@ -172,10 +173,26 @@ export function ClientsPage({
         chargedAmount: String(data.get('chargedAmount') || '0'),
         debtAmount: String(data.get('debtAmount') || '0'),
         vaccineApplications,
-      })
+      }
+      const attention = editingAttention
+        ? await api.updateAttention(editingAttention.id, attentionPayload)
+        : await api.saveAttention(selectedPatient.id, attentionPayload)
+
       const files = data.getAll('attachments').filter((item): item is File => item instanceof File && item.size > 0)
       if (files.length) await api.uploadAttentionFiles(attention.id, files)
       setDialog(null)
+      setEditingAttention(null)
+      setSelectedClient(await api.client(selectedClient.id))
+      setAttentions(await api.attentions(selectedPatient.id))
+    } catch (cause) {
+      setError(errorMessage(cause))
+    }
+  }
+
+  async function deleteAttention(id: number) {
+    if (!selectedPatient || !selectedClient) return
+    try {
+      await api.deleteAttention(id)
       setSelectedClient(await api.client(selectedClient.id))
       setAttentions(await api.attentions(selectedPatient.id))
     } catch (cause) {
@@ -256,7 +273,12 @@ export function ClientsPage({
     } catch (cause) { setError(errorMessage(cause)) }
   }
 
-  const closeDialog = () => setDialog(null)
+  const closeDialog = () => {
+    setDialog(null)
+    setEditingClient(null)
+    setEditingPatient(null)
+    setEditingAttention(null)
+  }
 
   return (
     <>
@@ -270,10 +292,18 @@ export function ClientsPage({
               if (selectedPatient) setAttentions(await api.attentions(selectedPatient.id))
             } catch (cause) { setError(errorMessage(cause)) }
           })()}
+          onDeleteAttention={(attentionId) => void deleteAttention(attentionId)}
+          onEditAttention={(attention) => {
+            setEditingAttention(attention)
+            setDialog('attention')
+          }}
           onToggleDeceased={() => void togglePatientDeceased()}
           onArchivePatient={() => void archivePatient()}
           onBack={() => setSelectedPatient(null)}
-          onRecordAttention={() => setDialog('attention')}
+          onRecordAttention={() => {
+            setEditingAttention(null)
+            setDialog('attention')
+          }}
           patient={selectedPatient}
         />
       ) : selectedClient ? (
@@ -311,7 +341,12 @@ export function ClientsPage({
       {dialog === 'client' && <ClientDialog client={editingClient ?? undefined} onClose={closeDialog} onSave={saveClient} />}
       {dialog === 'patient' && <PatientDialog patient={editingPatient ?? undefined} onClose={closeDialog} onSave={savePatient} />}
       {dialog === 'attention' && selectedPatient && (
-        <AttentionDialog onClose={closeDialog} onSave={saveAttention} vaccines={vaccines} />
+        <AttentionDialog
+          attention={editingAttention}
+          onClose={closeDialog}
+          onSave={saveAttention}
+          vaccines={vaccines}
+        />
       )}
     </>
   )

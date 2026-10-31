@@ -231,6 +231,8 @@ export function PatientDetailView({
   attentions,
   onBack,
   onRecordAttention,
+  onEditAttention,
+  onDeleteAttention,
   onDeleteAttachment,
   onToggleDeceased,
   onArchivePatient,
@@ -239,6 +241,8 @@ export function PatientDetailView({
   attentions: Attention[]
   onBack: () => void
   onRecordAttention: () => void
+  onEditAttention?: (attention: Attention) => void
+  onDeleteAttention?: (attentionId: number) => void
   onDeleteAttachment: (attentionId: number, attachmentId: number) => void
   onToggleDeceased: () => void
   onArchivePatient: () => void
@@ -264,7 +268,12 @@ export function PatientDetailView({
       <Panel>
         <PanelHeading description="Registro clínico y seguimiento del paciente" title="Historial de atenciones" />
         {attentions.length ? (
-          <AttentionTimeline attentions={attentions} onDeleteAttachment={onDeleteAttachment} />
+          <AttentionTimeline
+            attentions={attentions}
+            onDeleteAttachment={onDeleteAttachment}
+            onDeleteAttention={onDeleteAttention}
+            onEditAttention={onEditAttention}
+          />
         ) : (
           <EmptyState
             action="Registrar atención"
@@ -340,7 +349,17 @@ function ClientAttentionHistory({ items }: { items: ClientAttention[] }) {
   )
 }
 
-function AttentionTimeline({ attentions, onDeleteAttachment }: { attentions: Attention[]; onDeleteAttachment: (attentionId: number, attachmentId: number) => void }) {
+function AttentionTimeline({
+  attentions,
+  onEditAttention,
+  onDeleteAttention,
+  onDeleteAttachment,
+}: {
+  attentions: Attention[]
+  onEditAttention?: (attention: Attention) => void
+  onDeleteAttention?: (attentionId: number) => void
+  onDeleteAttachment: (attentionId: number, attachmentId: number) => void
+}) {
   return (
     <div className="px-5 py-1">
       {attentions.map((attention) => (
@@ -370,9 +389,15 @@ function AttentionTimeline({ attentions, onDeleteAttachment }: { attentions: Att
                 <Syringe size={14} />{application.vaccineName}
               </span>
             ))}
-            <div className="mt-2 flex gap-5 border-t border-slate-100 pt-2 text-[10px] text-muted">
-              <span>Cobrado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.chargedAmount))}</strong></span>
-              <span>Adeudado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.debtAmount))}</strong></span>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2 text-[10px] text-muted">
+              <div className="flex gap-5">
+                <span>Cobrado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.chargedAmount))}</strong></span>
+                <span>Adeudado <strong className="ml-1 text-slate-600">{formatMoney(Number(attention.debtAmount))}</strong></span>
+              </div>
+              <div className="flex gap-2">
+                {onEditAttention && <Button onClick={() => onEditAttention(attention)}>Editar</Button>}
+                {onDeleteAttention && <Button onClick={() => onDeleteAttention(attention.id)}>Eliminar</Button>}
+              </div>
             </div>
           </div>
         </article>

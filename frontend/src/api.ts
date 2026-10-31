@@ -98,6 +98,12 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  updateAttention: (id: number, data: Partial<Attention>) =>
+    request<Attention>(`/api/attentions/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  deleteAttention: (id: number) => request<void>(`/api/attentions/${id}`, { method: 'DELETE' }),
   uploadAttentionFiles: async (attentionId: number, files: FileList | File[]) => {
     const headers = new Headers()
     if (!csrfToken) {

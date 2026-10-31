@@ -1,6 +1,6 @@
 import type { FormEvent } from 'react'
 import { localDateTime } from '../../shared/format'
-import type { Client, Patient } from '../../api'
+import type { Attention, Client, Patient } from '../../api'
 import { Button, FormActions, FormField, formStyles, inputStyles, Modal } from '../../shared/ui'
 
 export function ClientDialog({
@@ -85,10 +85,12 @@ export function PatientDialog({
 }
 
 export function AttentionDialog({
+  attention,
   vaccines,
   onClose,
   onSave,
 }: {
+  attention?: Attention | null
   vaccines: { id: number; name: string }[]
   onClose: () => void
   onSave: (data: FormData) => Promise<void>
@@ -98,11 +100,23 @@ export function AttentionDialog({
     await onSave(new FormData(event.currentTarget))
   }
 
+  const selectedVaccineId = attention?.vaccineApplications?.[0]?.vaccineId
+
   return (
-    <Modal eyebrow="HISTORIAL CLÍNICO" onClose={onClose} title="Nueva atención">
+    <Modal
+      eyebrow="HISTORIAL CLÍNICO"
+      onClose={onClose}
+      title={attention ? 'Editar atención' : 'Nueva atención'}
+    >
       <form className={formStyles} onSubmit={submit}>
         <FormField label="Fecha y hora">
-          <input className={inputStyles} defaultValue={localDateTime()} name="dateTime" required type="datetime-local" />
+          <input
+            className={inputStyles}
+            defaultValue={attention ? toDateTimeLocal(attention.dateTime) : localDateTime()}
+            name="dateTime"
+            required
+            type="datetime-local"
+          />
         </FormField>
         <fieldset className="border-0 p-0">
           <legend className="mb-2 text-[11px] font-semibold text-slate-600">Tipo de atención</legend>
@@ -112,40 +126,113 @@ export function AttentionDialog({
               ['vacuna', 'Vacuna'],
               ['ecografia', 'Ecografía'],
             ].map(([value, label]) => (
-              <label className="flex items-center gap-1.5 rounded-md border border-slate-200 px-2 py-2 text-[11px] text-slate-600" key={value}>
-                <input className="accent-brand-700" name="types" type="checkbox" value={value} />
+              <label
+                className="flex items-center gap-1.5 rounded-md border border-slate-200 px-2 py-2 text-[11px] text-slate-600"
+                key={value}
+              >
+                <input
+                  className="accent-brand-700"
+                  defaultChecked={attention ? attention.types.includes(value) : false}
+                  name="types"
+                  type="checkbox"
+                  value={value}
+                />
                 {label}
               </label>
             ))}
           </div>
         </fieldset>
         <FormField label="Informe de ecografía" optional>
-          <textarea className={`${inputStyles} min-h-20 py-2`} name="ultrasoundReport" placeholder="Hallazgos e informe…" rows={3} />
+          <textarea
+            className={`${inputStyles} min-h-20 py-2`}
+            defaultValue={attention?.ultrasoundReport ?? ''}
+            name="ultrasoundReport"
+            placeholder="Hallazgos e informe…"
+            rows={3}
+          />
         </FormField>
         <FormField label="Estudios e informes" optional>
-          <input className={inputStyles} accept="image/jpeg,image/png,application/pdf" multiple name="attachments" type="file" />
-          <span className="mt-1 block text-[10px] text-muted">JPG, PNG o PDF · hasta 10 archivos de 10 MB cada uno · requiere tipo ecografía</span>
+          <input
+            accept="image/jpeg,image/png,application/pdf"
+            className={inputStyles}
+            multiple
+            name="attachments"
+            type="file"
+          />
+          <span className="mt-1 block text-[10px] text-muted">
+            JPG, PNG o PDF · hasta 10 archivos de 10 MB cada uno · requiere tipo ecografía
+          </span>
         </FormField>
-        <FormField label="Motivo"><input className={inputStyles} name="reason" placeholder="Ej. Control anual" /></FormField>
+        <FormField label="Motivo">
+          <input
+            className={inputStyles}
+            defaultValue={attention?.reason ?? ''}
+            name="reason"
+            placeholder="Ej. Control anual"
+          />
+        </FormField>
         <FormField label="Observaciones">
-          <textarea className={`${inputStyles} min-h-20 py-2`} name="observations" placeholder="Diagnóstico, tratamiento, indicaciones…" rows={3} />
+          <textarea
+            className={`${inputStyles} min-h-20 py-2`}
+            defaultValue={attention?.observations ?? ''}
+            name="observations"
+            placeholder="Diagnóstico, tratamiento, indicaciones…"
+            rows={3}
+          />
         </FormField>
         <FormField label="Vacuna">
-          <select className={inputStyles} name="vaccine">
+          <select
+            className={inputStyles}
+            defaultValue={selectedVaccineId ?? ''}
+            name="vaccine"
+          >
             <option value="">Seleccionar si corresponde</option>
-            {vaccines.map((vaccine) => <option key={vaccine.id} value={vaccine.id}>{vaccine.name}</option>)}
+            {vaccines.map((vaccine) => (
+              <option key={vaccine.id} value={vaccine.id}>
+                {vaccine.name}
+              </option>
+            ))}
           </select>
         </FormField>
         <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
-          <FormField label="Monto cobrado"><input className={inputStyles} inputMode="decimal" name="chargedAmount" placeholder="0,00" /></FormField>
-          <FormField label="Monto adeudado"><input className={inputStyles} inputMode="decimal" name="debtAmount" placeholder="0,00" /></FormField>
+          <FormField label="Monto cobrado">
+            <input
+              className={inputStyles}
+              defaultValue={attention?.chargedAmount ?? ''}
+              inputMode="decimal"
+              name="chargedAmount"
+              placeholder="0,00"
+            />
+          </FormField>
+          <FormField label="Monto adeudado">
+            <input
+              className={inputStyles}
+              defaultValue={attention?.debtAmount ?? ''}
+              inputMode="decimal"
+              name="debtAmount"
+              placeholder="0,00"
+            />
+          </FormField>
         </div>
-        <p className="-mt-1.5 text-[10px] text-muted">Los montos se ingresan manualmente para esta atención.</p>
+        <p className="-mt-1.5 text-[10px] text-muted">
+          Los montos se ingresan manualmente para esta atención.
+        </p>
         <FormActions>
-          <Button onClick={onClose} type="button">Cancelar</Button>
-          <Button type="submit" variant="primary">Guardar atención</Button>
+          <Button onClick={onClose} type="button">
+            Cancelar
+          </Button>
+          <Button type="submit" variant="primary">
+            {attention ? 'Guardar cambios' : 'Guardar atención'}
+          </Button>
         </FormActions>
       </form>
     </Modal>
   )
+}
+
+function toDateTimeLocal(iso?: string) {
+  if (!iso) return localDateTime()
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
