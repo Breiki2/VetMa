@@ -1,11 +1,14 @@
 import type { FormEvent } from 'react'
 import { localDateTime } from '../../shared/format'
+import type { Client, Patient } from '../../api'
 import { Button, FormActions, FormField, formStyles, inputStyles, Modal } from '../../shared/ui'
 
 export function ClientDialog({
+  client,
   onClose,
   onSave,
 }: {
+  client?: Client
   onClose: () => void
   onSave: (data: FormData) => Promise<void>
 }) {
@@ -15,18 +18,19 @@ export function ClientDialog({
   }
 
   return (
-    <Modal eyebrow="NUEVO REGISTRO" onClose={onClose} title="Agregar cliente">
+    <Modal eyebrow={client ? 'FICHA DEL CLIENTE' : 'NUEVO REGISTRO'} onClose={onClose} title={client ? 'Editar cliente' : 'Agregar cliente'}>
       <form className={formStyles} onSubmit={submit}>
         <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
-          <FormField label="Nombre"><input className={inputStyles} name="name" required /></FormField>
-          <FormField label="Apellido"><input className={inputStyles} name="surname" required /></FormField>
+          <FormField label="Nombre"><input className={inputStyles} defaultValue={client?.name} name="name" required /></FormField>
+          <FormField label="Apellido"><input className={inputStyles} defaultValue={client?.surname} name="surname" required /></FormField>
         </div>
-        <FormField label="Teléfono"><input className={inputStyles} name="phone" required /></FormField>
-        <FormField label="Email" optional><input className={inputStyles} name="email" type="email" /></FormField>
-        <FormField label="Dirección" optional><input className={inputStyles} name="address" /></FormField>
+        <FormField label="Teléfono"><input className={inputStyles} defaultValue={client?.phone} name="phone" required /></FormField>
+        <FormField label="Email" optional><input className={inputStyles} defaultValue={client?.email ?? ''} name="email" type="email" /></FormField>
+        <FormField label="Dirección" optional><input className={inputStyles} defaultValue={client?.address ?? ''} name="address" /></FormField>
+        <FormField label="Notas" optional><textarea className={`${inputStyles} min-h-20 py-2`} defaultValue={client?.notes ?? ''} name="notes" rows={3} /></FormField>
         <FormActions>
           <Button onClick={onClose} type="button">Cancelar</Button>
-          <Button type="submit" variant="primary">Guardar cliente</Button>
+          <Button type="submit" variant="primary">{client ? 'Guardar cambios' : 'Guardar cliente'}</Button>
         </FormActions>
       </form>
     </Modal>
@@ -34,9 +38,11 @@ export function ClientDialog({
 }
 
 export function PatientDialog({
+  patient,
   onClose,
   onSave,
 }: {
+  patient?: Patient
   onClose: () => void
   onSave: (data: FormData) => Promise<void>
 }) {
@@ -46,23 +52,27 @@ export function PatientDialog({
   }
 
   return (
-    <Modal eyebrow="FICHA DEL PACIENTE" onClose={onClose} title="Agregar paciente">
+    <Modal eyebrow="FICHA DEL PACIENTE" onClose={onClose} title={patient ? `Editar a ${patient.name}` : 'Agregar paciente'}>
       <form className={formStyles} onSubmit={submit}>
-        <FormField label="Nombre del paciente"><input className={inputStyles} name="name" required /></FormField>
+        <FormField label="Nombre del paciente"><input className={inputStyles} defaultValue={patient?.name} name="name" required /></FormField>
         <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
           <FormField label="Especie">
-            <select className={inputStyles} name="species"><option value="dog">Perro</option><option value="cat">Gato</option></select>
+            <select className={inputStyles} defaultValue={patient?.species ?? 'dog'} name="species"><option value="dog">Perro</option><option value="cat">Gato</option></select>
           </FormField>
           <FormField label="Sexo">
-            <select className={inputStyles} name="sex">
+            <select className={inputStyles} defaultValue={patient?.sex ?? 'female'} name="sex">
               <option value="female">Hembra</option><option value="male">Macho</option><option value="unknown">No indicado</option>
             </select>
           </FormField>
         </div>
+        <FormField label="Raza" optional><input className={inputStyles} defaultValue={patient?.breed ?? ''} name="breed" /></FormField>
         <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
-          <FormField label="Edad aproximada"><input className={inputStyles} name="age" placeholder="Ej. 2 años" required /></FormField>
+          <FormField label="Fecha de nacimiento" optional><input className={inputStyles} defaultValue={patient?.birthDate ?? ''} name="birthDate" type="date" /></FormField>
+          <FormField label="Edad aproximada"><input className={inputStyles} defaultValue={patient?.approximateAge ?? ''} name="age" placeholder="Ej. 2 años" /></FormField>
+        </div>
+        <div className="grid grid-cols-2 gap-3 max-[650px]:grid-cols-1">
           <FormField label="Castrado/a">
-            <select className={inputStyles} name="castrated"><option value="no">No</option><option value="yes">Sí</option></select>
+            <select className={inputStyles} defaultValue={patient?.castrated ? 'yes' : 'no'} name="castrated"><option value="no">No</option><option value="yes">Sí</option></select>
           </FormField>
         </div>
         <FormActions>

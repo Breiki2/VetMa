@@ -68,6 +68,7 @@ export const api = {
       method: id ? 'PATCH' : 'POST',
       body: JSON.stringify(data),
     }),
+  archiveClient: (id: number) => request<void>(`/api/clients/${id}`, { method: 'DELETE' }),
   savePatient: (clientId: number, data: Partial<Patient>) =>
     request<Patient>(`/api/clients/${clientId}/patients`, {
       method: 'POST',
@@ -78,6 +79,7 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
+  archivePatient: (id: number) => request<void>(`/api/patients/${id}`, { method: 'DELETE' }),
   vaccines: (species: string) => request<Vaccine[]>(`/api/vaccines?species=${species}`),
   attentions: (patientId: number) => request<Attention[]>(`/api/patients/${patientId}/attentions`),
   saveAttention: (patientId: number, data: Partial<Attention>) =>
@@ -165,10 +167,10 @@ export type Patient = {
   id: number
   name: string
   species: 'dog' | 'cat'
-  breed?: string
+  breed?: string | null
   sex: 'female' | 'male' | 'unknown'
-  birthDate?: string
-  approximateAge?: string
+  birthDate?: string | null
+  approximateAge?: string | null
   castrated: boolean
   deceased?: boolean
   attentions?: Attention[]

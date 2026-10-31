@@ -36,6 +36,8 @@ export function ClientsPage({
   const [attentions, setAttentions] = useState<Attention[]>([])
   const [vaccines, setVaccines] = useState<Vaccine[]>([])
   const [dialog, setDialog] = useState<Dialog>(null)
+  const [editingClient, setEditingClient] = useState<Client | null>(null)
+  const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -114,10 +116,13 @@ export function ClientsPage({
         phone: String(data.get('phone')),
         email: String(data.get('email')) || null,
         address: String(data.get('address')) || null,
-      })
+        notes: String(data.get('notes')) || null,
+      }, editingClient?.id)
       setDialog(null)
+      setEditingClient(null)
       await refreshClients()
-      await openClient(client.id)
+      if (selectedClient?.id === client.id) setSelectedClient({ ...selectedClient, ...client })
+      else await openClient(client.id)
     } catch (cause) {
       setError(errorMessage(cause))
     }
@@ -126,15 +131,23 @@ export function ClientsPage({
   async function savePatient(data: FormData) {
     if (!selectedClient) return
     try {
-      await api.savePatient(selectedClient.id, {
+      const payload = {
         name: String(data.get('name')),
         species: String(data.get('species')) as Patient['species'],
         sex: String(data.get('sex')) as Patient['sex'],
         castrated: data.get('castrated') === 'yes',
-        approximateAge: String(data.get('age')),
-      })
+        breed: String(data.get('breed')) || null,
+        birthDate: String(data.get('birthDate')) || null,
+        approximateAge: String(data.get('age')) || null,
+      }
+      const patient = editingPatient
+        ? await api.updatePatient(editingPatient.id, payload)
+        : await api.savePatient(selectedClient.id, payload)
       setDialog(null)
-      await openClient(selectedClient.id)
+      setEditingPatient(null)
+      const updatedClient = await api.client(selectedClient.id)
+      setSelectedClient(updatedClient)
+      if (selectedPatient?.id === patient.id) setSelectedPatient(patient)
     } catch (cause) {
       setError(errorMessage(cause))
     }
@@ -184,6 +197,26 @@ export function ClientsPage({
       const updated = await api.updatePatient(selectedPatient.id, { deceased: !selectedPatient.deceased })
       setSelectedPatient(updated)
       setSelectedClient({ ...selectedClient, patients: selectedClient.patients.map((patient) => patient.id === updated.id ? updated : patient) })
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
+  async function archiveClient() {
+    if (!selectedClient) return
+    try {
+      await api.archiveClient(selectedClient.id)
+      setSelectedClient(null)
+      setSelectedPatient(null)
+      await refreshClients()
+    } catch (cause) { setError(errorMessage(cause)) }
+  }
+
+  async function archivePatient() {
+    if (!selectedPatient || !selectedClient) return
+    try {
+      await api.archivePatient(selectedPatient.id)
+      setSelectedPatient(null)
+      setAttentions([])
+      setSelectedClient(await api.client(selectedClient.id))
     } catch (cause) { setError(errorMessage(cause)) }
   }
 
@@ -238,6 +271,7 @@ export function ClientsPage({
             } catch (cause) { setError(errorMessage(cause)) }
           })()}
           onToggleDeceased={() => void togglePatientDeceased()}
+          onArchivePatient={() => void archivePatient()}
           onBack={() => setSelectedPatient(null)}
           onRecordAttention={() => setDialog('attention')}
           patient={selectedPatient}
@@ -253,6 +287,9 @@ export function ClientsPage({
           onSelectPatient={(patient) => void openPatient(patient)}
           onToggleRemindersOptOut={() => void toggleRemindersOptOut()}
           onLoadMorePatients={() => void loadMorePatients()}
+          onEditClient={() => { setEditingClient(selectedClient); setDialog('client') }}
+          onArchiveClient={() => void archiveClient()}
+          onEditPatient={(patient) => { setEditingPatient(patient); setDialog('patient') }}
         />
       ) : (
         <ClientListView
@@ -271,8 +308,8 @@ export function ClientsPage({
         />
       )}
 
-      {dialog === 'client' && <ClientDialog onClose={closeDialog} onSave={saveClient} />}
-      {dialog === 'patient' && <PatientDialog onClose={closeDialog} onSave={savePatient} />}
+      {dialog === 'client' && <ClientDialog client={editingClient ?? undefined} onClose={closeDialog} onSave={saveClient} />}
+      {dialog === 'patient' && <PatientDialog patient={editingPatient ?? undefined} onClose={closeDialog} onSave={savePatient} />}
       {dialog === 'attention' && selectedPatient && (
         <AttentionDialog onClose={closeDialog} onSave={saveAttention} vaccines={vaccines} />
       )}

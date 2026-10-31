@@ -86,4 +86,33 @@ final class ClientPatientFlowTest extends ApiWebTestCase
         self::assertResponseStatusCodeSame(422);
         self::assertSame('validation_failed', json_decode((string) $this->browser->getResponse()->getContent(), true)['error']);
     }
+
+    public function testAnotherVeterinarianCannotEditOrArchiveOwnedClientOrPatient(): void
+    {
+        $owner = $this->createUser();
+        $this->createUser('other@example.test');
+        $client = new \App\Entity\Client($owner, 'Ana', 'Pérez', '112233');
+        $patient = new \App\Entity\Patient($client, 'Mora', 'cat', 'female', true);
+        $patient->update(['approximateAge' => '4 años']);
+        foreach ([$client, $patient] as $entity) $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+        $this->logIn();
+
+        $this->browser->request('POST', '/api/logout', server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        $this->browser->request('GET', '/api/csrf-token');
+        $this->browser->jsonRequest('POST', '/api/login', ['email' => 'other@example.test', 'password' => 'Correct-Horse-42!'], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseIsSuccessful();
+
+        $this->browser->jsonRequest('PATCH', '/api/clients/'.$client->getId(), ['name' => 'Intruso'], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+        $this->browser->request('DELETE', '/api/clients/'.$client->getId(), server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+        $this->browser->jsonRequest('PATCH', '/api/patients/'.$patient->getId(), ['name' => 'Intruso'], ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+        $this->browser->request('DELETE', '/api/patients/'.$patient->getId(), server: ['HTTP_X_CSRF_TOKEN' => $this->csrfToken()]);
+        self::assertResponseStatusCodeSame(404);
+
+        self::assertSame('Ana', $this->entityManager->find(\App\Entity\Client::class, $client->getId())->getName());
+        self::assertFalse($this->entityManager->find(\App\Entity\Patient::class, $patient->getId())->isArchived());
+    }
 }

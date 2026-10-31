@@ -133,6 +133,9 @@ export function ClientDetailView({
   onSelectPatient,
   onToggleRemindersOptOut,
   onLoadMorePatients,
+  onEditClient,
+  onArchiveClient,
+  onEditPatient,
 }: {
   client: ClientDetails
   onBack: () => void
@@ -140,13 +143,16 @@ export function ClientDetailView({
   onSelectPatient: (patient: Patient) => void
   onToggleRemindersOptOut: () => void
   onLoadMorePatients: () => void
+  onEditClient: () => void
+  onArchiveClient: () => void
+  onEditPatient: (patient: Patient) => void
 }) {
   return (
     <>
       <ClientAttentionHistory items={client.attentions} />
       <BackButton onClick={onBack}>Volver a clientes</BackButton>
       <PageHeading
-        action={<Button onClick={onAddPatient} variant="primary"><Plus size={17} /> Agregar paciente</Button>}
+        action={<div className="flex flex-wrap gap-2"><Button onClick={onEditClient}>Editar cliente</Button><Button onClick={onArchiveClient}>Archivar</Button><Button onClick={onAddPatient} variant="primary"><Plus size={17} /> Agregar paciente</Button></div>}
         description={`${client.phone} · ${client.email || 'Sin email registrado'}`}
         eyebrow="FICHA DEL CLIENTE"
         title={`${client.name} ${client.surname}`}
@@ -172,21 +178,17 @@ export function ClientDetailView({
         {client.patients.length > 0 ? (
           <div className="grid grid-cols-2 gap-3 p-4 max-[650px]:grid-cols-1">
             {client.patients.map((patient) => (
-              <button
-                className="flex items-center gap-3 rounded-lg border border-slate-100 bg-white p-3 text-left text-slate-500 hover:border-emerald-200 hover:bg-emerald-50/30"
-                key={patient.id}
-                onClick={() => onSelectPatient(patient)}
-                type="button"
-              >
-                <span className="grid size-[38px] place-items-center rounded-xl bg-emerald-50 text-brand-700"><Dog size={21} /></span>
-                <span className="min-w-0 flex-1">
-                  <strong className="block text-xs text-slate-700">{patient.name}</strong>
-                  <span className="mt-1 block text-[10px] text-muted">
-                    {patient.species === 'dog' ? 'Perro' : 'Gato'} · {patient.breed || 'Raza no indicada'}
+              <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-white p-3" key={patient.id}>
+                <button className="flex min-w-0 flex-1 items-center gap-3 text-left text-slate-500" onClick={() => onSelectPatient(patient)} type="button">
+                  <span className="grid size-[38px] shrink-0 place-items-center rounded-xl bg-emerald-50 text-brand-700"><Dog size={21} /></span>
+                  <span className="min-w-0 flex-1">
+                    <strong className="block text-xs text-slate-700">{patient.name}</strong>
+                    <span className="mt-1 block text-[10px] text-muted">{patient.species === 'dog' ? 'Perro' : 'Gato'} · {patient.breed || 'Raza no indicada'}</span>
                   </span>
-                </span>
-                <ChevronRight size={18} />
-              </button>
+                  <ChevronRight size={18} />
+                </button>
+                <Button onClick={() => onEditPatient(patient)}>Editar</Button>
+              </div>
             ))}
           </div>
         ) : (
@@ -231,6 +233,7 @@ export function PatientDetailView({
   onRecordAttention,
   onDeleteAttachment,
   onToggleDeceased,
+  onArchivePatient,
 }: {
   patient: Patient
   attentions: Attention[]
@@ -238,6 +241,7 @@ export function PatientDetailView({
   onRecordAttention: () => void
   onDeleteAttachment: (attentionId: number, attachmentId: number) => void
   onToggleDeceased: () => void
+  onArchivePatient: () => void
 }) {
   const vaccineCount = attentions.reduce((count, attention) => count + (attention.vaccineApplications?.length || 0), 0)
   const debtTotal = attentions.reduce((sum, attention) => sum + Number(attention.debtAmount), 0)
@@ -246,7 +250,7 @@ export function PatientDetailView({
     <>
       <BackButton onClick={onBack}>Volver a ficha de cliente</BackButton>
       <PageHeading
-        action={<div className="flex flex-wrap gap-2"><a className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50" href={api.patientHistoryPdfUrl(patient.id)}>Exportar PDF</a><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
+        action={<div className="flex flex-wrap gap-2"><a className="inline-flex h-9 items-center rounded-md border border-slate-200 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50" href={api.patientHistoryPdfUrl(patient.id)}>Exportar PDF</a><Button onClick={onToggleDeceased}>{patient.deceased ? 'Corregir estado' : 'Marcar fallecido'}</Button><Button onClick={onArchivePatient}>Archivar paciente</Button><Button onClick={onRecordAttention} variant="primary"><Plus size={17} /> Registrar atención</Button></div>}
         description={`${patient.species === 'dog' ? 'Perro' : 'Gato'}${patient.breed ? ` · ${patient.breed}` : ''} · ${patient.approximateAge || 'Edad sin indicar'}`}
         eyebrow="HISTORIAL CLÍNICO"
         title={patient.name}
