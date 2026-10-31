@@ -32,10 +32,18 @@ class VaccineApplication
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $observations = null;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
+    private \DateTimeImmutable $updatedAt;
+
     public function __construct(Vaccine $vaccine, \DateTimeImmutable $appliedAt)
     {
         $this->vaccine = $vaccine;
         $this->appliedAt = $appliedAt;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = $this->createdAt;
     }
 
     public function attachTo(Attention $attention): void { $this->attention = $attention; }
@@ -48,6 +56,8 @@ class VaccineApplication
     public function getObservations(): ?string { return $this->observations; }
     public function getReminder(): ?VaccineReminder { return $this->reminder; }
     public function setReminder(VaccineReminder $reminder): void { $this->reminder = $reminder; }
+    public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getUpdatedAt(): \DateTimeImmutable { return $this->updatedAt; }
 
     public function update(array $data): void
     {
@@ -60,5 +70,6 @@ class VaccineApplication
         if (array_key_exists('observations', $data)) {
             $this->observations = $data['observations'] === null || $data['observations'] === '' ? null : trim((string) $data['observations']);
         }
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }

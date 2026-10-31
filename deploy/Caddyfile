@@ -1,0 +1,9 @@
+{$DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "SAMEORIGIN"
+		-X-Powered-By
+	}
+	reverse_proxy web:80
+}

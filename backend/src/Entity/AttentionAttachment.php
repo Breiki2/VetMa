@@ -32,6 +32,9 @@ class AttentionAttachment
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $updatedAt;
+
     public function __construct(Attention $attention, string $originalName, string $storedName, string $mimeType, int $size)
     {
         $this->attention = $attention;
@@ -40,6 +43,7 @@ class AttentionAttachment
         $this->mimeType = $mimeType;
         $this->size = $size;
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = $this->createdAt;
     }
 
     public function getId(): ?int { return $this->id; }
@@ -49,4 +53,5 @@ class AttentionAttachment
     public function getMimeType(): string { return $this->mimeType; }
     public function getSize(): int { return $this->size; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getUpdatedAt(): \DateTimeImmutable { return $this->updatedAt; }
 }

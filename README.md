@@ -31,4 +31,6 @@ cd backend && composer test
 cd frontend && npm test && npm run build
 ```
 
+El despliegue de producción, HTTPS, tareas programadas, respaldos cifrados y simulacro de restauración están documentados en [docs/production.md](docs/production.md).
+
 La aplicación guarda cobrado y adeudado manualmente por atención. Esta versión implementa el acceso, las cuentas, los clientes, los pacientes, el catálogo de vacunas y los registros de atención. Los adjuntos, recordatorios por email y exportación PDF permanecen fuera del núcleo implementado.
