@@ -98,6 +98,7 @@ export function AttentionDialog({
   onClose: () => void
   onSave: (data: FormData) => Promise<void>
 }) {
+  const [types, setTypes] = useState<string[]>(attention?.types ?? [])
   const [vaccineApps, setVaccineApps] = useState<VaccineApp[]>(
     attention?.vaccineApplications?.length
       ? attention.vaccineApplications.map((a) => ({
@@ -108,6 +109,13 @@ export function AttentionDialog({
         }))
       : [{ vaccineId: '', appliedAt: '', batchNumber: '', observations: '' }],
   )
+  const hasClinicalAttention = types.includes('atencion')
+  const hasUltrasound = types.includes('ecografia')
+  const hasVaccine = types.includes('vacuna')
+
+  function toggleType(value: string) {
+    setTypes((current) => current.includes(value) ? current.filter((type) => type !== value) : [...current, value])
+  }
 
   function updateApp(index: number, field: keyof VaccineApp, value: string) {
     setVaccineApps((prev) => prev.map((app, i) => (i === index ? { ...app, [field]: value } : app)))
@@ -155,9 +163,10 @@ export function AttentionDialog({
                 key={value}
               >
                 <input
+                  checked={types.includes(value)}
                   className="accent-brand-700"
-                  defaultChecked={attention ? attention.types.includes(value) : false}
                   name="types"
+                  onChange={() => toggleType(value)}
                   type="checkbox"
                   value={value}
                 />
@@ -166,46 +175,55 @@ export function AttentionDialog({
             ))}
           </div>
         </fieldset>
-        <FormField label="Informe de ecografía" optional>
-          <textarea
-            className={`${inputStyles} min-h-20 py-2`}
-            defaultValue={attention?.ultrasoundReport ?? ''}
-            name="ultrasoundReport"
-            placeholder="Hallazgos e informe…"
-            rows={3}
-          />
-        </FormField>
-        <FormField label="Estudios e informes" optional>
-          <input
-            accept="image/jpeg,image/png,application/pdf"
-            className={inputStyles}
-            multiple
-            name="attachments"
-            type="file"
-          />
-          <span className="mt-1 block text-[10px] text-muted">
-            JPG, PNG o PDF · hasta 10 archivos de 10 MB cada uno · requiere tipo ecografía
-          </span>
-        </FormField>
-        <FormField label="Motivo">
-          <input
-            className={inputStyles}
-            defaultValue={attention?.reason ?? ''}
-            name="reason"
-            placeholder="Ej. Control anual"
-          />
-        </FormField>
-        <FormField label="Observaciones">
-          <textarea
-            className={`${inputStyles} min-h-20 py-2`}
-            defaultValue={attention?.observations ?? ''}
-            name="observations"
-            placeholder="Diagnóstico, tratamiento, indicaciones…"
-            rows={3}
-          />
-        </FormField>
+        {hasUltrasound && (
+          <>
+            <FormField label="Informe de ecografía" optional>
+              <textarea
+                className={`${inputStyles} min-h-20 py-2`}
+                defaultValue={attention?.ultrasoundReport ?? ''}
+                name="ultrasoundReport"
+                placeholder="Hallazgos e informe…"
+                rows={3}
+              />
+            </FormField>
+            <FormField label="Estudios e informes" optional>
+              <input
+                accept="image/jpeg,image/png,application/pdf"
+                className={inputStyles}
+                multiple
+                name="attachments"
+                type="file"
+              />
+              <span className="mt-1 block text-[10px] text-muted">
+                JPG, PNG o PDF · hasta 10 archivos de 10 MB cada uno · requiere tipo ecografía
+              </span>
+            </FormField>
+          </>
+        )}
+        {(hasClinicalAttention || hasUltrasound) && (
+          <FormField label="Motivo">
+            <input
+              className={inputStyles}
+              defaultValue={attention?.reason ?? ''}
+              name="reason"
+              placeholder="Ej. Control anual"
+            />
+          </FormField>
+        )}
+        {hasClinicalAttention && (
+          <FormField label="Observaciones">
+            <textarea
+              className={`${inputStyles} min-h-20 py-2`}
+              defaultValue={attention?.observations ?? ''}
+              name="observations"
+              placeholder="Diagnóstico, tratamiento, indicaciones…"
+              rows={3}
+            />
+          </FormField>
+        )}
 
         {/* Multi-vaccine section (RF-21) */}
+        {hasVaccine && (
         <div>
           <p className="mb-2 text-[11px] font-semibold text-slate-600">Vacunas aplicadas</p>
           <div className="flex flex-col gap-3">
@@ -288,6 +306,7 @@ export function AttentionDialog({
             <Plus size={14} /> Agregar otra vacuna
           </button>
         </div>
+        )}
 
         <input type="hidden" name="vaccineApplicationsJson" value={JSON.stringify(vaccineApps)} />
 

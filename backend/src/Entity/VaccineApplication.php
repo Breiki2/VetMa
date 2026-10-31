@@ -62,7 +62,12 @@ class VaccineApplication
     public function update(array $data): void
     {
         if (array_key_exists('appliedAt', $data)) {
-            $this->appliedAt = $data['appliedAt'];
+            $value = $data['appliedAt'];
+            if ($value instanceof \DateTimeImmutable) {
+                $this->appliedAt = $value;
+            } elseif ($value !== null && $value !== '') {
+                $this->appliedAt = new \DateTimeImmutable((string) $value);
+            }
         }
         if (array_key_exists('batchNumber', $data)) {
             $this->batchNumber = $data['batchNumber'] === null || $data['batchNumber'] === '' ? null : trim((string) $data['batchNumber']);

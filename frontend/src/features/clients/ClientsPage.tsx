@@ -181,13 +181,17 @@ export function ClientsPage({
       }
     }
 
+    const reason = data.get('reason')
+    const observations = data.get('observations')
+    const ultrasoundReport = data.get('ultrasoundReport')
+
     try {
       const attentionPayload = {
         dateTime,
         types,
-        reason: String(data.get('reason')),
-        observations: String(data.get('observations')),
-        ultrasoundReport: String(data.get('ultrasoundReport')) || null,
+        reason: reason === null ? '' : String(reason),
+        observations: observations === null ? '' : String(observations),
+        ultrasoundReport: ultrasoundReport === null ? null : String(ultrasoundReport) || null,
         chargedAmount: String(data.get('chargedAmount') || '0'),
         debtAmount: String(data.get('debtAmount') || '0'),
         vaccineApplications,

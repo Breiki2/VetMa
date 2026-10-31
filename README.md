@@ -24,6 +24,19 @@ npm run dev
 
 Abrí la dirección que muestra Vite. El proxy local envía `/api` al backend. No existe una cuenta predeterminada: `app:admin:create` solicita email, nombre y una contraseña de al menos 12 caracteres.
 
+### Datos de prueba
+
+Para cargar clientes, pacientes, atenciones con deudas y vacunas de ejemplo:
+
+```sh
+cd backend
+php bin/console app:seed:demo --owner=admin@gmail.com --clients=30
+php bin/console app:seed:demo --owner=brea@gmail.com --clients=30
+php bin/console app:seed:demo --all-users --clients=30
+```
+
+Genera datos a nombre del usuario indicado (por defecto, el primer usuario activo) o de todos los usuarios activos con `--all-users`. Incluye las vacunas Triple Felina, Rabia, Quíntuple y Séxtuple, y es idempotente: podés volver a ejecutarlo para agregar más clientes por usuario sin duplicar los existentes.
+
 ## Verificación
 
 ```sh

@@ -284,6 +284,63 @@ describe('VetMa workspace', () => {
     expect(screen.getByRole('img', { name: 'ecografia.jpg' })).toBeInTheDocument()
     expect(screen.getByText(/informe.pdf/)).toBeInTheDocument()
   })
+
+  it('shows attention fields according to the selected types', async () => {
+    const client = { id: 7, name: 'Ana', surname: 'Pérez', phone: '112233', debtTotal: '0.00' }
+    const patient = { id: 8, name: 'Mora', species: 'cat', sex: 'female', castrated: true, approximateAge: '4 años' }
+
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = String(input)
+      if (url.endsWith('/api/me')) return Response.json({ error: 'unauthenticated' }, { status: 401 })
+      if (url.endsWith('/api/csrf-token')) return Response.json({ csrfToken: 'csrf-test' })
+      if (url.endsWith('/api/login')) return Response.json(sessionUser('veterinarian'))
+      if (url.includes('/api/clients?q=')) {
+        return Response.json({ items: [client], pagination: { total: 1, page: 1, limit: 20 } })
+      }
+      if (url.includes('/api/clients/7?page=')) {
+        return Response.json({
+          ...client,
+          patients: [patient],
+          patientsPagination: { total: 1, page: 1, limit: 20 },
+          attentions: [],
+        })
+      }
+      if (url.endsWith('/api/vaccines?species=cat')) {
+        return Response.json([{ id: 1, name: 'Triple Felina', species: 'cat', active: true }])
+      }
+      if (url.endsWith('/api/patients/8/attentions')) return Response.json([])
+      throw new Error(`Unexpected request ${url}`)
+    })
+
+    render(<App />)
+    await signIn('veterinarian')
+    fireEvent.click(await screen.findByText('Ana Pérez'))
+    fireEvent.click(await screen.findByRole('button', { name: /Mora/ }))
+    fireEvent.click((await screen.findAllByRole('button', { name: 'Registrar atención' }))[0])
+
+    expect(screen.queryByLabelText('Motivo')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Observaciones')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText(/Informe de ecografía/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Vacunas aplicadas')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByLabelText('Atención clínica'))
+    expect(screen.getByLabelText('Motivo')).toBeInTheDocument()
+    expect(screen.getByLabelText('Observaciones')).toBeInTheDocument()
+    expect(screen.queryByLabelText(/Informe de ecografía/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Vacunas aplicadas')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByLabelText('Ecografía'))
+    expect(screen.getByLabelText(/Informe de ecografía/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/Estudios e informes/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByLabelText('Vacuna'))
+    expect(screen.getByText('Vacunas aplicadas')).toBeInTheDocument()
+    expect(screen.getByText('Triple Felina')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByLabelText('Atención clínica'))
+    expect(screen.queryByLabelText('Observaciones')).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Motivo')).toBeInTheDocument()
+  })
 })
 
 async function signIn(role: 'admin' | 'veterinarian') {
