@@ -9,7 +9,7 @@ SQLite permite usar las migraciones versionadas actuales sin una conversión de 
 ## Primer despliegue
 
 1. Prepará un VPS con Docker Compose, `rclone`, `sqlite3` y `tar`. Apuntá el registro DNS del dominio a la IP del VPS y permití entrada TCP 80/443 (UDP 443 es opcional para HTTP/3).
-2. Copiá `.env.prod.example` a `.env.prod`. Definí un `APP_SECRET` único (`openssl rand -hex 32`), el dominio, una identidad de envío verificada y el DSN del proveedor SMTP. Escapá los caracteres reservados de la contraseña dentro del DSN.
+2. Copiá `production.env.example` a `.env.prod`. Definí un `APP_SECRET` único (`openssl rand -hex 32`), el dominio, una identidad de envío verificada y el DSN del proveedor SMTP. Escapá los caracteres reservados de la contraseña dentro del DSN.
 3. Protegé los secretos (`chmod 600 .env.prod`). Configurá un destino `rclone crypt` respaldado por un proveedor fuera del VPS. El remoto debe usar cifrado del lado del cliente y credenciales de escritura limitadas a la carpeta de backups.
 4. Construí y levantá los contenedores:
 

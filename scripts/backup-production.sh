@@ -2,7 +2,7 @@
 set -euo pipefail
 
 : "${BACKUP_REMOTE:?Set BACKUP_REMOTE to an rclone crypt remote, for example vetma-crypt:backups}"
-[[ -f .env.prod ]] || { echo 'Missing .env.prod; copy .env.prod.example and configure production secrets.' >&2; exit 1; }
+[[ -f .env.prod ]] || { echo 'Missing .env.prod; copy production.env.example and configure production secrets.' >&2; exit 1; }
 
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 destination="${BACKUP_REMOTE%/}/vetma-${timestamp}.tar.gz"

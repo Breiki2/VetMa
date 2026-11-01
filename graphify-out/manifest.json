@@ -726,5 +726,707 @@
     "seen": 1793488938.0306063,
     "ast_hash": "ce024af89b7e74b6e153637f14f6b658",
     "semantic_hash": "ce024af89b7e74b6e153637f14f6b658"
+  },
+  "AGENTS.md": {
+    "mtime": 1793403743.6030757,
+    "seen": 1793489124.8390658,
+    "ast_hash": "2be2d7842d7bf303eed1abd131e715fa",
+    "semantic_hash": ""
+  },
+  "GLOSSARY.md": {
+    "mtime": 1793406274.6679683,
+    "seen": 1793489124.839068,
+    "ast_hash": "66595c87c530b4a3710a1f6602e9d2b9",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793470085.7793565,
+    "seen": 1793489124.8390691,
+    "ast_hash": "3b0630ccd79ef6c11b7812f5390d4b04",
+    "semantic_hash": ""
+  },
+  "claude.md": {
+    "mtime": 1793403759.669931,
+    "seen": 1793489124.8390703,
+    "ast_hash": "73a00ddc4bbb70020abfb80277706f43",
+    "semantic_hash": ""
+  },
+  "docs/SRS - Sistema de gesti\u00f3n de historiales para veterinaria.md": {
+    "mtime": 1793459896.876999,
+    "seen": 1793489124.8390718,
+    "ast_hash": "8dab8b4e9aa01ec3d03128d86e4e88cd",
+    "semantic_hash": ""
+  },
+  "docs/adr/0001-montos-manuales-por-atencion.md": {
+    "mtime": 1793406274.751968,
+    "seen": 1793489124.8390727,
+    "ast_hash": "7eea7fa89b024ecf0a83b0ee8b0d47d7",
+    "semantic_hash": ""
+  },
+  "docs/production.md": {
+    "mtime": 1793463259.5686889,
+    "seen": 1793489124.8390734,
+    "ast_hash": "85b6467db5405bb3b8b5382e482a6d98",
+    "semantic_hash": ""
+  },
+  "frontend/index.html": {
+    "mtime": 1793459881.3920434,
+    "seen": 1793489124.8390746,
+    "ast_hash": "c16cb5bd06be36303f5e3bbd64ac1164",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/attention-dialog-1440.jpg": {
+    "mtime": 1793470315.0083997,
+    "seen": 1793489124.8390753,
+    "ast_hash": "d4da3d4e0c70578563dda1a5a4860280",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/attention-dialog-390.jpg": {
+    "mtime": 1793470347.7202954,
+    "seen": 1793489124.839076,
+    "ast_hash": "7ffcc892692062aa07284b6ae5b4be71",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/attention-dialog-768.jpg": {
+    "mtime": 1793470331.3713474,
+    "seen": 1793489124.8390768,
+    "ast_hash": "7ff5d6bbfdddf3e5139ce34f27c035a9",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/client-detail-1440.jpg": {
+    "mtime": 1793470312.6884072,
+    "seen": 1793489124.839078,
+    "ast_hash": "45a4bf45766c1b59e6d4aef46ac40a59",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/client-detail-390.jpg": {
+    "mtime": 1793470345.4203026,
+    "seen": 1793489124.8390787,
+    "ast_hash": "5dc5389f8cddfa86bd0590deb6956f52",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/client-detail-768.jpg": {
+    "mtime": 1793470329.080355,
+    "seen": 1793489124.8390794,
+    "ast_hash": "e8938bb3fca1d63a7e6a5dd665215480",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/clients-1440.jpg": {
+    "mtime": 1793470302.767439,
+    "seen": 1793489124.83908,
+    "ast_hash": "0494a903686cf03c3bec50555c4d4dbb",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/clients-390.jpg": {
+    "mtime": 1793470335.5243342,
+    "seen": 1793489124.839081,
+    "ast_hash": "0bd6892d3b1ede9d50d75a07f4ed4bc3",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/clients-768.jpg": {
+    "mtime": 1793470319.1513865,
+    "seen": 1793489124.8390818,
+    "ast_hash": "79b27af42e7a5cc832939b619b5c5f34",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/debts-1440.jpg": {
+    "mtime": 1793470304.1884344,
+    "seen": 1793489124.8390825,
+    "ast_hash": "fbced45792d50a11b8489b0ae2983349",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/debts-390.jpg": {
+    "mtime": 1793470336.9243298,
+    "seen": 1793489124.8390832,
+    "ast_hash": "a262d6ad0c2f90f85255ab96479e4d4e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/debts-768.jpg": {
+    "mtime": 1793470320.5803819,
+    "seen": 1793489124.8390841,
+    "ast_hash": "5903a725bbb20f937e84565d0be9ab51",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/login-1440.jpg": {
+    "mtime": 1793470299.8554482,
+    "seen": 1793489124.8390849,
+    "ast_hash": "51a9a7b016e492f98bcd4459b9ed1d63",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/login-390.jpg": {
+    "mtime": 1793470332.6513433,
+    "seen": 1793489124.8390856,
+    "ast_hash": "0bd6892d3b1ede9d50d75a07f4ed4bc3",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/login-768.jpg": {
+    "mtime": 1793470316.245396,
+    "seen": 1793489124.8390865,
+    "ast_hash": "79b27af42e7a5cc832939b619b5c5f34",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/patient-detail-1440.jpg": {
+    "mtime": 1793470314.259402,
+    "seen": 1793489124.8390872,
+    "ast_hash": "db979e1497ddf513d88ac7cee065dce7",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/patient-detail-390.jpg": {
+    "mtime": 1793470346.9842978,
+    "seen": 1793489124.8390882,
+    "ast_hash": "4267ac20b2e0edfbed6e1d3b70def54f",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/patient-detail-768.jpg": {
+    "mtime": 1793470330.6373498,
+    "seen": 1793489124.8390892,
+    "ast_hash": "16680261cc6c2d3489a3c3cedcffc434",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/reminders-1440.jpg": {
+    "mtime": 1793470305.6094298,
+    "seen": 1793489124.8390899,
+    "ast_hash": "5117b246085110fea304005b4198b64e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/reminders-390.jpg": {
+    "mtime": 1793470338.3263254,
+    "seen": 1793489124.8390906,
+    "ast_hash": "c8d6cd2771c9afcc665d402ab72cca8e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/reminders-768.jpg": {
+    "mtime": 1793470322.0486987,
+    "seen": 1793489124.8390918,
+    "ast_hash": "ceab420161a163d12f199ed39cdfe7d5",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/settings-1440.jpg": {
+    "mtime": 1793470309.8634162,
+    "seen": 1793489124.8390927,
+    "ast_hash": "dc7a5657f4c6966f663faf09c8d52708",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/settings-390.jpg": {
+    "mtime": 1793470342.5903118,
+    "seen": 1793489124.8390934,
+    "ast_hash": "55a15ddbbb88d93012d80270a5730bd0",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/settings-768.jpg": {
+    "mtime": 1793470326.2563639,
+    "seen": 1793489124.8390942,
+    "ast_hash": "1b9ce48787671085412c7375f2617952",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/users-1440.jpg": {
+    "mtime": 1793470308.4084208,
+    "seen": 1793489124.8390954,
+    "ast_hash": "ebbf577287c12c597a81f4d183d59d83",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/users-390.jpg": {
+    "mtime": 1793470341.1203165,
+    "seen": 1793489124.839096,
+    "ast_hash": "d0e33d614d7bd034f8412ecf53f22d40",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/users-768.jpg": {
+    "mtime": 1793470324.8553684,
+    "seen": 1793489124.8390968,
+    "ast_hash": "2b7db6044a27a119b4d5d9880b5d8018",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/vaccines-1440.jpg": {
+    "mtime": 1793470307.0054252,
+    "seen": 1793489124.8390977,
+    "ast_hash": "c18f827b22f0fac93b3746b3cf3ef693",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/vaccines-390.jpg": {
+    "mtime": 1793470339.717321,
+    "seen": 1793489124.8390987,
+    "ast_hash": "1c84090c79a77e1856bc05cfab4858a6",
+    "semantic_hash": ""
+  },
+  ".taste-skill/before/vaccines-768.jpg": {
+    "mtime": 1793470323.4513729,
+    "seen": 1793489124.8390994,
+    "ast_hash": "89f5eddc291d9f37c854dac8fed854fd",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/desktop-fold.jpg": {
+    "mtime": 1793470849.7004955,
+    "seen": 1793489124.8391001,
+    "ast_hash": "d045feff67f1651ca075e68f4b4a28c6",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/desktop-page-01.jpg": {
+    "mtime": 1793470851.0036883,
+    "seen": 1793489124.839101,
+    "ast_hash": "b107683a2c5186d0ee61edfbf9311557",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/mobile-fold.jpg": {
+    "mtime": 1793470857.416668,
+    "seen": 1793489124.839102,
+    "ast_hash": "500b74711202d0dc5204d3c110937188",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/mobile-page-01.jpg": {
+    "mtime": 1793470859.3936615,
+    "seen": 1793489124.8391027,
+    "ast_hash": "71f2153f99536d2cb276fdbcc46df158",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/tablet-fold.jpg": {
+    "mtime": 1793470853.1986814,
+    "seen": 1793489124.8391037,
+    "ast_hash": "b13f6ec8f11e699abf17e0acd12e2ee4",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients/tablet-page-01.jpg": {
+    "mtime": 1793470855.210675,
+    "seen": 1793489124.8391044,
+    "ast_hash": "dc4f6b255ee4eef589a2ab47c8ad933f",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/desktop-fold.jpg": {
+    "mtime": 1793470982.9262671,
+    "seen": 1793489124.8391054,
+    "ast_hash": "a5cc077f1439a8bd83fde94e9bc11581",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/desktop-page-01.jpg": {
+    "mtime": 1793470984.209263,
+    "seen": 1793489124.839106,
+    "ast_hash": "e46680c4f18c8a79eceb04ac18190b8e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/mobile-fold.jpg": {
+    "mtime": 1793470989.809245,
+    "seen": 1793489124.839107,
+    "ast_hash": "aa96e56375117ece4d903cc920e415bf",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/mobile-page-01.jpg": {
+    "mtime": 1793470991.7852387,
+    "seen": 1793489124.8391078,
+    "ast_hash": "5cda1454acd18a081089dde30299c2a5",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/tablet-fold.jpg": {
+    "mtime": 1793470986.381256,
+    "seen": 1793489124.8391087,
+    "ast_hash": "1d808f49f8d4e015fb053cb2c256596c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients2/tablet-page-01.jpg": {
+    "mtime": 1793470987.617252,
+    "seen": 1793489124.8391094,
+    "ast_hash": "739f1ebed54877238dc6eb3e44e96c0e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/desktop-fold.jpg": {
+    "mtime": 1793471033.042107,
+    "seen": 1793489124.8391101,
+    "ast_hash": "a5cc077f1439a8bd83fde94e9bc11581",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/desktop-page-01.jpg": {
+    "mtime": 1793471034.4101026,
+    "seen": 1793489124.8391109,
+    "ast_hash": "e46680c4f18c8a79eceb04ac18190b8e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/mobile-fold.jpg": {
+    "mtime": 1793471040.0690846,
+    "seen": 1793489124.839113,
+    "ast_hash": "1997a6da74d76adf08d5d9963bb933d2",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/mobile-page-01.jpg": {
+    "mtime": 1793471042.1220782,
+    "seen": 1793489124.8391137,
+    "ast_hash": "63ed1c29e22fc2bead01d11d8f098bad",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/tablet-fold.jpg": {
+    "mtime": 1793471036.6090956,
+    "seen": 1793489124.8391144,
+    "ast_hash": "ea6a736c103ab7226feb7475c3703cb6",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-clients3/tablet-page-01.jpg": {
+    "mtime": 1793471037.8470917,
+    "seen": 1793489124.8391156,
+    "ast_hash": "1cc3d86d638e6c21289f2d43cc104d6b",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/desktop-fold.jpg": {
+    "mtime": 1793470877.640983,
+    "seen": 1793489124.8391163,
+    "ast_hash": "10748b88ab558ec7610e62a77ead709a",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/desktop-page-01.jpg": {
+    "mtime": 1793470878.9085991,
+    "seen": 1793489124.839117,
+    "ast_hash": "71a13fe4481de15fd8d1ec7757911c80",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/mobile-fold.jpg": {
+    "mtime": 1793470884.562581,
+    "seen": 1793489124.8391178,
+    "ast_hash": "5f9a7f84234507f4dfb34d8e37f431dd",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/mobile-page-01.jpg": {
+    "mtime": 1793470886.5845747,
+    "seen": 1793489124.839119,
+    "ast_hash": "5076f7addad0e9f91d654fd0ae701c92",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/tablet-fold.jpg": {
+    "mtime": 1793470881.1045923,
+    "seen": 1793489124.8391197,
+    "ast_hash": "f8bf0d59f4e961ae06e556ca4e61c846",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts/tablet-page-01.jpg": {
+    "mtime": 1793470882.3675883,
+    "seen": 1793489124.8391204,
+    "ast_hash": "a6f9d3c621e6606c3443f756a4e97f5c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/desktop-fold.jpg": {
+    "mtime": 1793471033.5241055,
+    "seen": 1793489124.839121,
+    "ast_hash": "24eee6330112fb56a0c6394cc3ceb110",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/desktop-page-01.jpg": {
+    "mtime": 1793471034.8611014,
+    "seen": 1793489124.839122,
+    "ast_hash": "cd3b19f406b5afe07ac0497564c47534",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/mobile-fold.jpg": {
+    "mtime": 1793471040.535083,
+    "seen": 1793489124.839123,
+    "ast_hash": "cef0899b14e158d8218581923c0b4bc9",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/mobile-page-01.jpg": {
+    "mtime": 1793471042.5310767,
+    "seen": 1793489124.8391237,
+    "ast_hash": "09799a36f5e540a97aee3adc11c0cd2e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/tablet-fold.jpg": {
+    "mtime": 1793471037.0640943,
+    "seen": 1793489124.8391247,
+    "ast_hash": "9c1b3bb185300439290a88d9db30e204",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-debts2/tablet-page-01.jpg": {
+    "mtime": 1793471038.3130903,
+    "seen": 1793489124.8391254,
+    "ast_hash": "5b3257ee90a80bf63572194cc9961162",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/desktop-fold.jpg": {
+    "mtime": 1793470878.5825913,
+    "seen": 1793489124.8391263,
+    "ast_hash": "9a3423a2b092a12921a51fa9be706ba2",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/desktop-page-01.jpg": {
+    "mtime": 1793470880.6595936,
+    "seen": 1793489124.8391275,
+    "ast_hash": "db3e479899828a86db5830e1b7fd7093",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/mobile-fold.jpg": {
+    "mtime": 1793470887.0505733,
+    "seen": 1793489124.8391283,
+    "ast_hash": "7bb4374bbfb5a12df363ec37ee88b810",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/mobile-page-01.jpg": {
+    "mtime": 1793470889.0415668,
+    "seen": 1793489124.839129,
+    "ast_hash": "3d5f73113e58b18a9c893d5c1384cc99",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/tablet-fold.jpg": {
+    "mtime": 1793470882.8325868,
+    "seen": 1793489124.83913,
+    "ast_hash": "c5e035153b8135352710d734b70f27cb",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders/tablet-page-01.jpg": {
+    "mtime": 1793470884.8575802,
+    "seen": 1793489124.8391306,
+    "ast_hash": "df8d83cfb71432d1b9aeba5aa8f9302c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/desktop-fold.jpg": {
+    "mtime": 1793471034.2845142,
+    "seen": 1793489124.8391314,
+    "ast_hash": "e7527b586c989d7bb4be332c20ff8128",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/desktop-page-01.jpg": {
+    "mtime": 1793471035.5970988,
+    "seen": 1793489124.839132,
+    "ast_hash": "dbe01f9bb5e822acfc6c6b99018c8604",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/mobile-fold.jpg": {
+    "mtime": 1793471042.2360778,
+    "seen": 1793489124.8391333,
+    "ast_hash": "7bb4374bbfb5a12df363ec37ee88b810",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/mobile-page-01.jpg": {
+    "mtime": 1793471044.2170713,
+    "seen": 1793489124.839134,
+    "ast_hash": "3d5f73113e58b18a9c893d5c1384cc99",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/tablet-fold.jpg": {
+    "mtime": 1793471037.8630917,
+    "seen": 1793489124.8391347,
+    "ast_hash": "c5e035153b8135352710d734b70f27cb",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-reminders2/tablet-page-01.jpg": {
+    "mtime": 1793471039.9400852,
+    "seen": 1793489124.8391354,
+    "ast_hash": "df8d83cfb71432d1b9aeba5aa8f9302c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/desktop-fold.jpg": {
+    "mtime": 1793471035.9041905,
+    "seen": 1793489124.8391364,
+    "ast_hash": "c5aa90c1ff62c562696ef08dd6a94cd5",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/desktop-page-01.jpg": {
+    "mtime": 1793471036.4440963,
+    "seen": 1793489124.8391373,
+    "ast_hash": "b5d39d59b40182072d17bfc097359afa",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/mobile-fold.jpg": {
+    "mtime": 1793471042.172078,
+    "seen": 1793489124.8391383,
+    "ast_hash": "b0b90eaa55fcf4fe9f2278ca194043bc",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/mobile-page-01.jpg": {
+    "mtime": 1793471043.387074,
+    "seen": 1793489124.839139,
+    "ast_hash": "90b06e229409b8613061b7bae7f1072d",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/tablet-fold.jpg": {
+    "mtime": 1793471038.6580892,
+    "seen": 1793489124.83914,
+    "ast_hash": "52d6fead0704c03302701cc85f7f483c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-settings/tablet-page-01.jpg": {
+    "mtime": 1793471039.8820853,
+    "seen": 1793489124.8391407,
+    "ast_hash": "5f0d0cbc13a67b5e4e9ebb7f8e3a17d1",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/desktop-fold.jpg": {
+    "mtime": 1793471035.2851,
+    "seen": 1793489124.8391416,
+    "ast_hash": "3bf4dfc4516028e5bd5fd7b431371dab",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/desktop-page-01.jpg": {
+    "mtime": 1793471035.8485796,
+    "seen": 1793489124.8391423,
+    "ast_hash": "71854d847ee047b10c84ab0a6e5b46ad",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/mobile-fold.jpg": {
+    "mtime": 1793471041.5700798,
+    "seen": 1793489124.8391433,
+    "ast_hash": "792e561ba73ec40747972349fc4a94d1",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/mobile-page-01.jpg": {
+    "mtime": 1793471042.7480762,
+    "seen": 1793489124.839144,
+    "ast_hash": "5265af6aaa34540b571ae97d119ed54b",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/tablet-fold.jpg": {
+    "mtime": 1793471038.144091,
+    "seen": 1793489124.8391447,
+    "ast_hash": "bb53ed9ea50f60158fe9d8b214df7d90",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users/tablet-page-01.jpg": {
+    "mtime": 1793471039.3820868,
+    "seen": 1793489124.8391457,
+    "ast_hash": "4e133212e23923bec732c120420f3e69",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/desktop-fold.jpg": {
+    "mtime": 1793471115.4859974,
+    "seen": 1793489124.8391466,
+    "ast_hash": "3bf2cdd2fe1f62f126f61b6a52fd57be",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/desktop-page-01.jpg": {
+    "mtime": 1793471115.9898422,
+    "seen": 1793489124.8391473,
+    "ast_hash": "f3723b5de203a17495d7e20ceca602eb",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/mobile-fold.jpg": {
+    "mtime": 1793471121.5728245,
+    "seen": 1793489124.8391483,
+    "ast_hash": "6e11d7bc622b45354804c9294ff969f8",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/mobile-page-01.jpg": {
+    "mtime": 1793471122.7778206,
+    "seen": 1793489124.839149,
+    "ast_hash": "2e36a005a7117536e29011cd9386878e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/tablet-fold.jpg": {
+    "mtime": 1793471118.1738353,
+    "seen": 1793489124.8391497,
+    "ast_hash": "9f5e2ef98114bd6bb9e1ede5dcd37aa4",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-users2/tablet-page-01.jpg": {
+    "mtime": 1793471119.3788314,
+    "seen": 1793489124.8391507,
+    "ast_hash": "3e9178e63aa2307523c7f93491608ddb",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/desktop-fold.jpg": {
+    "mtime": 1793470878.6637683,
+    "seen": 1793489124.8391514,
+    "ast_hash": "f0254cad0e7df14b2105bd9d4810c4a0",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/desktop-page-01.jpg": {
+    "mtime": 1793470879.1325984,
+    "seen": 1793489124.8391523,
+    "ast_hash": "b1fa5b9cf8f523406d3ea969bebd0867",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/mobile-fold.jpg": {
+    "mtime": 1793470884.7615805,
+    "seen": 1793489124.839153,
+    "ast_hash": "4b1022a49c179c3c1178ee3b57be5e08",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/mobile-page-01.jpg": {
+    "mtime": 1793470885.9735768,
+    "seen": 1793489124.8391542,
+    "ast_hash": "f8e2cd41bc015554eaf86147f403094c",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/tablet-fold.jpg": {
+    "mtime": 1793470881.3155916,
+    "seen": 1793489124.839155,
+    "ast_hash": "ad0a7b45336f00ad0637a575a1e6e669",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines/tablet-page-01.jpg": {
+    "mtime": 1793470882.5205877,
+    "seen": 1793489124.8391557,
+    "ast_hash": "fbdd54bf6986627897cd4f11fa65fe68",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/desktop-fold.jpg": {
+    "mtime": 1793471035.0382392,
+    "seen": 1793489124.8391564,
+    "ast_hash": "1e2064f0657d3217eaeec7bc22fec9e5",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/desktop-page-01.jpg": {
+    "mtime": 1793471035.544099,
+    "seen": 1793489124.8391573,
+    "ast_hash": "6847ab3ff4fe40f55f223731f3c4bcd7",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/mobile-fold.jpg": {
+    "mtime": 1793471041.3070807,
+    "seen": 1793489124.8391583,
+    "ast_hash": "439bb83b18cefc0cb9ae7aea843e44f4",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/mobile-page-01.jpg": {
+    "mtime": 1793471042.5270767,
+    "seen": 1793489124.839159,
+    "ast_hash": "99e347bf277e98829f2431748a3b36c9",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/tablet-fold.jpg": {
+    "mtime": 1793471037.8970916,
+    "seen": 1793489124.8391597,
+    "ast_hash": "f5601b63e29bc0a6253a05558a244b7a",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines2/tablet-page-01.jpg": {
+    "mtime": 1793471039.1280878,
+    "seen": 1793489124.8391607,
+    "ast_hash": "5959cbd5198e3102b4205814aad16ef3",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/desktop-fold.jpg": {
+    "mtime": 1793471114.9968455,
+    "seen": 1793489124.8391616,
+    "ast_hash": "224c20804c750c29edc73091ddd35230",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/desktop-page-01.jpg": {
+    "mtime": 1793471115.4898438,
+    "seen": 1793489124.8391623,
+    "ast_hash": "827879ec20f938a8c0659c6aeaafce93",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/mobile-fold.jpg": {
+    "mtime": 1793471121.0698261,
+    "seen": 1793489124.839163,
+    "ast_hash": "352b7c9c81a08270af1eb76c4b4ecf3e",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/mobile-page-01.jpg": {
+    "mtime": 1793471122.2778223,
+    "seen": 1793489124.8391643,
+    "ast_hash": "6d41f2ad9b22c13c0179f0d6c7223bd5",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/tablet-fold.jpg": {
+    "mtime": 1793471117.6698368,
+    "seen": 1793489124.839165,
+    "ast_hash": "1ad91db81d8cd4a70a32ea14d1246f61",
+    "semantic_hash": ""
+  },
+  ".taste-skill/inspect-vaccines3/tablet-page-01.jpg": {
+    "mtime": 1793471118.878833,
+    "seen": 1793489124.8391657,
+    "ast_hash": "4d42e870cb846adafc3847fc91f151cc",
+    "semantic_hash": ""
+  },
+  "frontend/package-lock.json": {
+    "mtime": 1793459608.4102402,
+    "seen": 1793489124.8391664,
+    "ast_hash": "5d62c0bf075c7f07f723f9768eec7e91",
+    "semantic_hash": ""
   }
 }

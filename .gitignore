@@ -1,0 +1,3 @@
+# Environment files can contain local or production secrets.
+**/.env
+**/.env.*

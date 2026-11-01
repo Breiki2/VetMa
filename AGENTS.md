@@ -24,6 +24,13 @@ requisitos: docs/SRS.md (consultar el RF/RNF antes de cambiar una regla).
 4. Borrado lógico en clientes y pacientes; vacunas usadas solo se desactivan.
 5. Adjuntos fuera del directorio público, validados por MIME real, máx. 10 MB.
 
+## Seguridad y privacidad
+- No guardar ni versionar secretos, credenciales, claves privadas ni datos personales o clínicos reales. Los archivos `.env` y sus variantes se ignoran en Git, incluidas las plantillas con ese nombre; usar nombres que no comiencen con `.env` para ejemplos sanitizados.
+- No incluir secretos ni datos personales o clínicos en logs, mensajes de error, capturas, documentación o respuestas. Redactarlos al inspeccionar configuración.
+- Si un secreto se expone o se versiona por accidente, revocarlo o rotarlo de inmediato; quitar el archivo de Git no elimina su historial. No copiar el valor expuesto a commits ni a otros canales.
+- Aplicar mínimo privilegio y acceso autenticado a datos y servicios. Mantener el aislamiento por usuario en cada consulta y endpoint.
+- Proteger los respaldos y sus credenciales: cifrado, acceso limitado y almacenamiento fuera del directorio público.
+
 ## Convenciones
 - Controladores finos; lógica en servicios. Validación con constraints de Symfony.
 - Montos con tipo decimal, nunca float.
